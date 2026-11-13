@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Séries de Fourier</title>
+<!--
+  ============================================================
+  APOSTILA EM HTML · COMO EDITAR
+  ------------------------------------------------------------
+  DOIS MODOS (mesmo arquivo):
+    * Modo leitura (padrão): páginas em rolagem, tudo visível. Para os alunos.
+      Zoom normal do navegador (Ctrl + / Ctrl -) funciona.
+    * Modo aula: botão no canto superior direito (ou ?aula no endereço).
+      As "camadas" aparecem uma a uma, como no Xournal++:
+        → , Espaço, PageDown = próxima camada    ← , PageUp = volta uma
+      (funciona com passador de slides). A página rola sozinha até a camada.
+
+  ESTRUTURA:
+    * Cada <section class="pagina"> é uma página A4. Se o texto não couber,
+      divida em duas páginas (copie o <section> e mova o restante).
+      A página cresce se o texto passar do tamanho A4; só fica menos parecida com papel.
+  * Equações: LaTeX entre \( ... \) (na linha) ou \[ ... \] (destacada).
+      Macros: \red{...}, \blue{...}, \Imp (⇒), \mt{texto}, \sen, \tg.
+    * Camadas: class="fragment" no parágrafo ou equação. Aparecem na ordem do texto.
+      Para dois elementos aparecerem juntos, dê a eles o mesmo data-junto="nome".
+    * Notas laterais em vermelho (como as "*:" do Xournal++):
+        <aside class="nota">*: texto da nota</aside>
+      colocada logo ANTES do parágrafo/equação a que se refere.
+    * Caixa de destaque: class="caixa". Rótulo laranja: <span class="rotulo">.
+    * Exemplo: <h3><span class="rotulo">Exemplo 1:</span> ...</h3>
+  EDIÇÃO VISUAL (sem precisar mexer no código):
+    * Abra o arquivo no navegador (dois cliques) e clique em "Editar".
+    * Clique no texto e digite, como num editor comum.
+    * Clique numa fórmula para editar o LaTeX (com prévia). Ctrl+Enter aplica.
+    * A barra de cima insere fórmulas, notas laterais, destaque laranja e
+      liga/desliga a camada do parágrafo onde está o cursor (as camadas
+      aparecem com uma barra laranja à esquerda).
+    * "Salvar" (ou Ctrl+S) grava o arquivo. No Chrome/Edge, na 1ª vez ele
+      pergunta onde salvar; escolha o próprio arquivo para sobrescrever.
+      Em outros navegadores, baixa uma cópia.
+  ============================================================
+-->
+<style>
+  :root {
+    --laranja: #ff8000;
+    --azul: #3333cc;
+    --vermelho: #dd1111;
+    --tinta: #111111;
+    --fundo: #ffffff;
+    --mesa: #e9e9ec;
+  }
+  /* A apostila é "papel branco"; o tema escuro só vale se tirar data-theme="light" do <html>. */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --fundo: #17191e; --tinta: #eeeeee; --azul: #a5b0ff; --mesa: #0d0e11; }
+  }
+  :root[data-theme="dark"] { --fundo: #17191e; --tinta: #eeeeee; --azul: #a5b0ff; --mesa: #0d0e11; }
+
+  html, body { background: var(--mesa); margin: 0; }
+  .apostila { padding: 24px 16px 80px; }
+  .apostila section.pagina {
+    position: relative; box-sizing: border-box;
+    max-width: 860px; min-height: 1216px;           /* proporção A4 */
+    margin: 0 auto 28px; padding: 56px 64px 72px;
+    background: var(--fundo); box-shadow: 0 2px 14px rgba(0,0,0,.15);
+  }
+  .apostila section.pagina::after { content: ""; display: block; clear: both; }
+
+  .apostila {
+    font-family: "Times New Roman", "Liberation Serif", Times, serif;
+    color: var(--azul);
+    font-size: 20px;
+    line-height: 1.45;
+  }
+  .apostila h1, .apostila h2, .apostila h3 {
+    font-family: inherit; text-transform: none; color: var(--laranja);
+    font-weight: normal; letter-spacing: 0; text-shadow: none; line-height: 1.2;
+  }
+  .apostila h1 { font-size: 2.1em; text-align: center; margin: 0 0 .15em; }
+  .apostila .subtitulo { text-align: center; color: var(--laranja); font-size: 1.25em; margin-bottom: 1.2em; }
+  .apostila h2 { font-size: 1.45em; margin: 0 0 .6em; }
+  .apostila h3 { font-size: 1.1em; margin: 1em 0 .4em; color: var(--azul); }
+  .apostila p { margin: 0 0 .6em; text-indent: 2em; }
+  .apostila p.sem-recuo { text-indent: 0; }
+  .apostila ul, .apostila ol { margin: 0 0 .6em 2.5em; }
+  .apostila li { margin: .2em 0; }
+  .apostila .eq { color: var(--tinta); margin: .25em 0 .7em; text-indent: 0; clear: both; }
+  .apostila .rotulo { color: var(--laranja); }
+  .apostila .caixa { clear: both; border: 1.5px solid var(--laranja); border-radius: 6px; padding: .3em .9em; margin: .4em 0 .9em; color: var(--tinta); }
+  .apostila .caixa p { color: var(--azul); }
+  .apostila aside.nota {
+    float: right; clear: right; width: 30%; margin: .1em 0 .5em 1.2em;
+    color: var(--vermelho); font-size: .72em; line-height: 1.3; text-align: left; text-indent: 0;
+  }
+  .apostila aside.nota mjx-container { color: var(--vermelho) !important; }
+  .apostila mjx-container { color: var(--tinta); }
+  .apostila mjx-container[display="true"] { margin: .3em 0 !important; max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+  .apostila svg.grafico { width: 100%; height: auto; display: block; margin: .3em 0 .6em; }
+  .apostila .grafico .eixo { stroke: #888; stroke-width: 1.5; }
+  .apostila .grafico .alvo { stroke: var(--tinta); stroke-width: 2.5; fill: none; }
+  .apostila .grafico .soma { fill: none; stroke-width: 2.2; }
+  .apostila .rodape { position: absolute; bottom: 22px; left: 0; right: 0; text-align: center; font-size: .7em; color: #999; }
+
+  /* modo aula: camadas */
+  body.aula .fragment { visibility: hidden; opacity: 0; transition: opacity .25s; }
+  body.aula .fragment.visivel { visibility: visible; opacity: 1; }
+  .fragment { scroll-margin: 90px 0 30vh; }
+  #passos { position: fixed; bottom: 12px; right: 12px; z-index: 50; display: none; gap: 6px; align-items: center;
+    font: 14px system-ui, sans-serif; color: #333; background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 4px 6px; }
+  body.aula #passos { display: flex; }
+  #passos button { font: inherit; border: 1px solid #ccc; background: #f7f7f7; border-radius: 4px; padding: 3px 10px; cursor: pointer; }
+
+  @media (max-width: 700px) {
+    .apostila { padding: 0 0 60px; overflow-x: clip; }
+    .apostila section.pagina { min-height: 0; padding: 48px 16px 56px; margin-bottom: 12px; box-shadow: none; }
+    .apostila aside.nota { float: none; width: auto; margin: .2em 0 .6em; }
+  }
+  @media print {
+    @page { size: A4; margin: 0; }
+    html, body { background: #fff; }
+    .apostila { padding: 0; }
+    .apostila section.pagina { box-shadow: none; margin: 0; break-after: page; min-height: 0; }
+    body.aula .fragment { visibility: visible; opacity: 1; }
+    #passos { display: none !important; }
+  }
+
+  #modo {
+    position: fixed; top: 10px; right: 12px; z-index: 50;
+    font: 14px system-ui, sans-serif; background: #fff; color: #333;
+    border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; text-decoration: none;
+  }
+  #modo:hover { background: #f3f3f3; }
+  @media print { #modo { display: none; } }
+
+  /* ---------- modo edição ---------- */
+  #editar { position: fixed; top: 10px; right: 112px; z-index: 50;
+    font: 14px system-ui, sans-serif; background: #fff; color: #333;
+    border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+  #editar:hover { background: #f3f3f3; }
+  body.aula #editar, body.editando #editar, body.editando #modo { display: none; }
+  #barra { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+    background: #fafafa; border-bottom: 1px solid #ccc; padding: 6px 10px; gap: 6px; flex-wrap: wrap;
+    justify-content: center; align-items: center; font: 14px system-ui, sans-serif; color: #333; }
+  body.editando #barra { display: flex; }
+  body.editando .apostila { padding-top: 64px; }
+  #barra button { font: inherit; border: 1px solid #ccc; background: #fff; border-radius: 5px; padding: 5px 10px; cursor: pointer; }
+  #barra button:hover { background: #eef; }
+  #barra .sep { width: 1px; height: 22px; background: #ccc; margin: 0 4px; }
+  #barra #b-salvar { background: #2a6; color: #fff; border-color: #2a6; }
+  #barra #b-camada.ligada { background: #ffe2c4; border-color: #ff8000; }
+  #aviso { margin-left: 8px; color: #2a6; min-width: 60px; }
+  body.editando section.pagina { outline: none; }
+  body.editando .fragment { visibility: visible; opacity: 1; box-shadow: -12px 0 0 -9px #ffb366; }
+  body.editando mjx-container { cursor: pointer; border-radius: 4px; }
+  body.editando mjx-container:hover { background: #eef2ff; outline: 1px solid #aab; }
+  #editor-eq { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 70;
+    width: min(760px, calc(100vw - 32px)); box-sizing: border-box;
+    background: #fff; border: 1px solid #bbb; border-radius: 8px; box-shadow: 0 6px 30px rgba(0,0,0,.25);
+    padding: 12px; font: 14px system-ui, sans-serif; color: #333; }
+  #editor-eq[hidden] { display: none; }
+  #ee-tex { width: 100%; box-sizing: border-box; font: 15px ui-monospace, Consolas, monospace; padding: 6px; }
+  #ee-previa { min-height: 48px; margin: 8px 0; padding: 6px; background: #f7f7f9; border-radius: 4px; overflow-x: auto;
+    color: #111; font-size: 20px; text-align: center; }
+  #editor-eq .ee-botoes { display: flex; gap: 6px; justify-content: flex-end; margin-top: 8px; }
+  #editor-eq button { font: inherit; border: 1px solid #ccc; background: #fff; border-radius: 5px; padding: 5px 12px; cursor: pointer; }
+  #ee-aplicar { background: #2a6 !important; color: #fff; border-color: #2a6 !important; }
+  @media print { #editar, #barra, #editor-eq { display: none !important; } }
+</style>
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      macros: {
+        red:  ['\\textcolor{red}{#1}', 1],
+        blue: ['\\textcolor{blue}{#1}', 1],
+        Imp:  '\\;\\Rightarrow\\;',
+        mt:   ['\\text{#1}', 1],
+        sen:  '\\operatorname{sen}',
+        tg:   '\\operatorname{tg}'
+      }
+    },
+    svg: { fontCache: 'local' },
+    startup: { typeset: false }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<a id="modo" href="#">Modo aula</a>
+<button id="editar" type="button">Editar</button>
+<div id="barra">
+  <button type="button" id="b-camada" title="Liga/desliga: o parágrafo onde está o cursor aparece por clique no modo aula">Camada</button>
+  <span class="sep"></span>
+  <button type="button" id="b-inline" title="Fórmula no meio do texto, na posição do cursor">Fórmula na linha</button>
+  <button type="button" id="b-display" title="Equação centralizada, abaixo do parágrafo atual">Equação destacada</button>
+  <button type="button" id="b-nota" title="Nota lateral vermelha (*:) ao lado do parágrafo atual">Nota lateral</button>
+  <button type="button" id="b-laranja" title="Destaca em laranja o texto selecionado (ou remove o destaque)">Laranja</button>
+  <span class="sep"></span>
+  <button type="button" id="b-salvar" title="Ctrl+S">Salvar</button>
+  <button type="button" id="b-sair">Sair da edição</button>
+  <span id="aviso"></span>
+</div>
+<main class="apostila">
+
+<!-- =============================== PÁGINA 1 =============================== -->
+<section class="pagina">
+  <h1>10.1 - Séries de Fourier</h1>
+  <div class="subtitulo">A ferramenta matemática</div>
+  <h2>1. Motivação</h2>
+  <p class="fragment">Até agora, quando resolvemos EDOs lineares não homogêneas, a força externa&nbsp;(a parte não homogênea) era quase sempre um polinômio, uma exponencial, um seno ou um cosseno. Para esses casos, o método dos coeficientes a determinar resolve o problema rapidamente. Mas, em muitas aplicações, a força externa&nbsp;é <span class="rotulo">periódica</span>&nbsp;sem ser uma senoide: uma onda quadrada, uma onda triangular, um dente de serra, um pulso que se repete. Como tratar esses casos?</p>
+  <p class="fragment">A ideia, devida a Joseph Fourier (1807), é escrever uma função periódica qualquer como uma <span class="rotulo">soma de senos e cossenos</span>. Se a EDO é linear, o princípio da linearidade nos permite resolver a equação para cada seno e cada cosseno separadamente e, no final, somar as respostas. Ou seja, trocamos um problema difícil por infinitos problemas fáceis, que já sabemos resolver.</p>
+  <h2 class="fragment">2. A série de Fourier</h2>
+  <aside class="nota fragment">*: O livro usa \(x\) como variável inde- pendente nesse capítulo. Nas aplica- ções a EDOs, voltaremos a usar \(t\).</aside>
+  <p class="fragment">Seja \(f\) uma função periódica de período \(2L\), isto é, \(f(x+2L) = f(x)\) para todo \(x\). Sua <span class="rotulo">série de Fourier</span> é</p>
+  <div class="eq fragment caixa">\[ f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty}\left[ a_n\cos\frac{n\pi x}{L} + b_n\sen\frac{n\pi x}{L} \right]. \]</div>
+  <p class="fragment">Note que cada termo \(\cos(n\pi x/L)\) e \(\sen(n\pi x/L)\) também tem período \(2L\) (na verdade, período \(2L/n\)), de modo que a soma inteira se repete a cada \(2L\), como \(f(x)\). O termo de ordem \(n\) é chamado de <span class="rotulo">\(n\)-ésimo harmônico</span>, e sua frequência é \(n\pi/L\). O primeiro harmônico (\(n = 1\)) é a <span class="rotulo">fundamental</span>.</p>
+  <p class="fragment">Restam duas perguntas: como calcular os coeficientes \(a_n\) e \(b_n\)? E a série realmente converge para \(f(x)\)? Começamos pela primeira, que depende de uma propriedade muito especial dos senos e cossenos.</p>
+  <div class="rodape">1</div>
+</section>
+
+<!-- =============================== PÁGINA 2 =============================== -->
+<section class="pagina">
+  <h2>3. Ortogonalidade</h2>
+  <p class="fragment">Assim como fazemos com vetores, podemos definir um <span class="rotulo">produto interno</span> entre funções. Para duas funções \(f(x)\) e \(g(x)\) definidas em \([-L, L]\), definimos</p>
+  <div class="eq fragment">\[ \langle f, g\rangle = \int_{-L}^{L} f(x)\,g(x)\,dx. \]</div>
+  <p class="fragment sem-recuo">Essa operação tem as mesmas propriedades do produto escalar de vetores: é simétrica, linear em cada argumento e \(\langle f, f\rangle &gt; 0\) se \(f\) não é identicamente nula. Por analogia, dizemos que \(f(x)\) e \(g(x)\) são <span class="rotulo">ortogonais</span> quando \(\langle f, g\rangle = 0\), assim como os vetores \(\vec i\) e \(\vec j\), cujo produto escalar é zero.</p>
+  <p class="fragment">Os senos e cossenos da série de Fourier são ortogonais entre si. Mais precisamente, para \(m, n \ge 1\) inteiros, valem</p>
+  <div class="eq fragment">\[ \int_{-L}^{L} \sen\frac{m\pi x}{L}\,\sen\frac{n\pi x}{L}\,dx = \begin{cases} 0, & m \ne n,\\ L, & m = n, \end{cases} \]
+  \[ \int_{-L}^{L} \cos\frac{m\pi x}{L}\,\cos\frac{n\pi x}{L}\,dx = \begin{cases} 0, & m \ne n,\\ L, & m = n, \end{cases} \]</div>
+  <div class="eq fragment">\[ \int_{-L}^{L} \sen\frac{m\pi x}{L}\,\cos\frac{n\pi x}{L}\,dx = 0 \quad \mt{para quaisquer } m, n. \]</div>
+  <p class="fragment sem-recuo">Ou seja, dois <span class="rotulo">senos diferentes</span>, dois <span class="rotulo">cossenos diferentes</span>, ou um seno e um cosseno quaisquer têm produto interno nulo. Só o produto interno de uma função com ela mesma não se anula, e vale \(L\). A série de Fourier é, então, a decomposição de \(f(x)\) numa base ortogonal de funções, e cada coeficiente será a <span class="rotulo">projeção ortogonal</span> de \(f(x)\) sobre um elemento dessa base, como veremos na próxima seção.</p>
+  <p class="fragment">Vamos demonstrar o primeiro caso. Usando a identidade</p>
+  <div class="eq fragment">\[ \sen A \sen B = \tfrac12\big[\cos(A-B) - \cos(A+B)\big], \]</div>
+  <p class="fragment sem-recuo">para \(m \ne n\), inteiros. Se&nbsp;\(\red{a} = m-n\)&nbsp;e&nbsp;\(\red{b} = m+n\),&nbsp;também inteiros, temos</p>
+  <div class="eq fragment">\[ \int_{-L}^{L} \sen\frac{\red m\pi x}{L}\sen\frac{\red n\pi x}{L}\,dx = \frac12\int_{-L}^{L}\left[\cos\frac{\red{a}\pi x}{L} - \cos\frac{\red{b}\pi x}{L}\right]dx \]</div>
+  <div class="eq fragment">\[ = \frac12\left[\frac{L}{a\pi}\sen\frac{a\pi x}{L} - \frac{L}{b\pi}\sen\frac{b\pi x}{L}\right]_{-L}^{L} = 0, \]</div>
+  <p class="fragment sem-recuo">pois \(\sen(k\pi) = 0\) para todo inteiro \(k\). Se&nbsp;\(m = n\), o primeiro cosseno vira \(\cos 0 = 1\), e a integral vale \(\frac12 \cdot 2L = L\). As outras duas integrais se verificam do mesmo modo.</p>
+  <div class="rodape">2</div>
+</section>
+
+<!-- =============================== PÁGINA 3 =============================== -->
+<section class="pagina">
+  <h2>4. Os coeficientes (fórmulas de Euler–Fourier)</h2>
+  <p class="fragment">A demonstração acima nos dá um método para deduzir os coeficientes \(a_n\)<span style="text-indent: 2em;">&nbsp;e \(b_n\)&nbsp;da Série de Fourier. Suponha que </span>\(f(x)\)<span style="text-indent: 2em;"> tenha a série de Fourier da seção 2. Para obter o&nbsp;</span>\(b_m\)<span style="text-indent: 2em;">, multiplicamos os dois lados por </span>\(\red{\sen(m\pi x/L)}\)<span style="text-indent: 2em;"> e integramos de </span>\(-L\)<span style="text-indent: 2em;"> a </span>\(L\)<span style="text-indent: 2em;">:</span></p>
+  <div class="eq fragment">\[ \red{\int_{-L}^{L}} f(x)\red{\sen\tfrac{m\pi x}{L}\,dx} = \red{\int_{-L}^{L}}\frac{a_0}{2} + \sum_{n=1}^{\infty}\left[ a_n\cos\frac{n\pi x}{L} + b_n\sen\frac{n\pi x}{L} \right]\red{\sen\tfrac{m\pi x}{L}\,dx}. \]</div>
+  <div class="eq fragment"><span style="text-indent: 2em; color: rgb(51, 51, 204);">Do que vimos na seção anterior, do lado direito, apenas não dá zero as integrais com </span>\(b_n\)<span style="text-indent: 2em; color: rgb(51, 51, 204);"> onde&nbsp;</span>\(n = m\)<span style="text-indent: 2em; color: rgb(51, 51, 204);">. Logo,</span><br></div>
+  <div class="eq fragment"><span style="text-indent: 2em; color: rgb(51, 51, 204);">\[ \red{\int_{-L}^{L}} f(x)\red{\sen\tfrac{m\pi x}{L}\,dx} =  b_n\int_{-L}^{L}\sin^2\frac{n\pi x}{L}\,dx = b_n\int_{-L}^{L}\frac12\,dx = b_n\frac{2L}{2} \]<br></span></div>
+  <div class="eq fragment"><span style="text-indent: 2em; color: rgb(51, 51, 204);">Que, aplicada a fórmula de arco dobro, a parte do cosseno&nbsp;</span><font color="#3333cc">também dá zero. Assim,</font></div>
+  <div class="eq fragment">\[ \int_{-L}^{L} f(x)\sen\frac{m\pi x}{L}\,dx = b_m\,L. \]</div>
+  <p class="fragment">Fazendo o mesmo com \(\cos(m\pi x/L)\) obtemos \(a_m\). Trocando \(m\) por \(n\):</p>
+  <div class="eq fragment caixa">\[ a_n = \frac1L\int_{-L}^{L} f(x)\cos\frac{n\pi x}{L}\,dx, \quad n = 0, 1, 2, \ldots \]
+  \[ b_n = \frac1L\int_{-L}^{L} f(x)\sen\frac{n\pi x}{L}\,dx, \quad n = 1, 2, \ldots \]</div>
+  <aside class="nota fragment">*: Por isso escrevemos \(a_0/2\) na série: assim uma única fórmula serve para todos os \(a_n\).</aside>
+  <p class="fragment">Para \(n = 0\), o seno é zero e&nbsp;\(\cos 0=1\). Assim, a fórmula dá \(a_0 = \frac1L\int_{-L}^{L} f(x)\,dx\), e o termo constante da série, \(a_0/2\), é simplesmente o <span class="rotulo">valor médio</span> de \(f(x)\) num período.</p>
+  <p class="fragment">Como o integrando tem período \(2L\), as integrais podem ser feitas em <span class="rotulo">qualquer</span> intervalo de comprimento \(2L\), por exemplo \([0, 2L]\). Escolha o mais conveniente para a função dada.</p>
+  <div class="rodape">3</div>
+</section>
+
+<!-- =============================== PÁGINA 4 =============================== -->
+<section class="pagina">
+  <h2>5. Convergência</h2>
+  <p class="fragment">Até aqui supusemos que a série converge para \(f(x)\). Isso nem sempre é verdade, mas o teorema a seguir cobre praticamente todas as funções que aparecem em engenharia. Lembremos que uma função é <span class="rotulo">seccionalmente contínua</span> num intervalo quando tem no máximo um número finito de descontinuidades nele, todas de salto (isto é, os limites laterais existem e são finitos).</p>
+  <div class="caixa fragment">
+    <p class="sem-recuo"><span class="rotulo">Teorema de Fourier.</span> Suponha que \(f\) e \(f'\) sejam seccionalmente contínuas em \([-L, L)\) e que \(f(x)\) seja periódica de período \(2L\). Então a série de Fourier de \(f\) converge, em cada ponto \(x\), para</p>
+    <ul>
+      <li>\(f(x)\), se \(f\) é contínua em \(x\);</li>
+      <li>\(\dfrac{f(x^+) + f(x^-)}{2}\), a média dos limites laterais, se \(f(x)\) tem um salto em \(x\).</li>
+    </ul>
+  </div>
+  <p class="fragment">Ou seja, nos pontos de salto a série "escolhe" o ponto médio do salto, não importa qual valor&nbsp;\(f(x)\)&nbsp;tem ali.</p>
+  <p class="fragment">Há um detalhe importante perto dos saltos. Ao somarmos apenas os \(N\) primeiros termos (a <span class="rotulo">soma parcial</span> \(S_N\)), a curva oscila e <span class="rotulo">ultrapassa</span> o valor da função perto do salto. Aumentando \(N\), a oscilação fica mais estreita, mas a ultrapassagem não diminui: ela tende a cerca de <span class="rotulo">9% do tamanho do salto</span>. Esse é o <span class="rotulo">fenômeno de Gibbs</span>, e você o verá no gráfico do Exemplo 1.</p>
+  <h2 class="fragment">6. Funções pares e ímpares</h2>
+  <p class="fragment">Muitas vezes, metade dos coeficientes é zero, e podemos saber disso antes de fazer qualquer conta. Lembremos que \(f\) é <span class="rotulo">par</span> se \(f(-x) = f(x)\) (gráfico simétrico em relação ao eixo \(y\), como \(\cos x\) e \(x^2\)) e <span class="rotulo">ímpar</span> se \(f(-x) = -f(x)\) (simétrico em relação à origem, como \(\sen x\) e \(x^3\)). Duas propriedades decorrem diretamente disso:</p>
+  <div class="eq fragment">\[ f(x) \mt{ par} \Imp \int_{-L}^{L} f(x)\,dx = 2\int_0^L f(x)\,dx, \qquad f(x) \mt{ ímpar} \Imp \int_{-L}^{L} f(x)\,dx = 0. \]</div>
+  <p class="fragment">Além disso, o produto de duas funções pares ou de duas ímpares é par, e o produto de uma par por uma ímpar é ímpar, exatamente como nos números naturais.</p>
+  <p class="fragment">Aplicando isso às fórmulas de Euler–Fourier: se \(f\) é par, então \(f(x)\sen(n\pi x/L)\) é ímpar e todos os \(b_n\) se anulam; se \(f\) é ímpar, então \(f(x)\cos(n\pi x/L)\) é ímpar e todos os \(a_n\) se anulam. Assim,</p>
+  <div class="rodape">4</div>
+</section>
+
+<!-- =============================== PÁGINA 5 =============================== -->
+<section class="pagina">
+  <div class="caixa fragment">
+    <p class="sem-recuo"><span class="rotulo">\(f\) par:</span> \(b_n = 0\) e a série só tem cossenos, com \(\displaystyle a_n = \frac2L\int_0^L f(x)\cos\frac{n\pi x}{L}\,dx.\)</p>
+    <p class="sem-recuo"><span class="rotulo">\(f\) ímpar:</span> \(a_n = 0\) e a série só tem senos, com \(\displaystyle b_n = \frac2L\int_0^L f(x)\sen\frac{n\pi x}{L}\,dx.\)</p>
+  </div>
+  <h3 class="fragment"><span class="rotulo">Exemplo 1:</span> a onda quadrada.</h3>
+  <p class="fragment">Encontre a série de Fourier da função de período \(2L\) dada por</p>
+  <div class="eq fragment">\[ f(x) = \begin{cases} -1, & -L &lt; x &lt; 0, \\ \phantom{-}1, & \phantom{-}0 &lt; x &lt; L, \end{cases} \qquad f(x + 2L) = f(x). \]</div>
+  <p class="fragment">Primeiramente, note que \(f\) é ímpar. Logo, \(a_n = 0\) para todo \(n\), e só precisamos calcular os \(b_n\), integrando apenas em \([0, L]\), onde \(f = 1\):</p>
+  <div class="eq fragment">\[ b_n = \frac2L\int_0^L 1\cdot\sen\frac{n\pi x}{L}\,dx = \frac2L\left[-\frac{L}{n\pi}\cos\frac{n\pi x}{L}\right]_0^L = \frac{2}{n\pi}\big(1 - \red{\cos n\pi}\big). \]</div>
+  <aside class="nota fragment">*: Será sempre útil lembrar que<span style="font-size: 0.72em;">&nbsp;&nbsp;</span>\(\cos n\pi = (-1)^n\)<span style="font-size: 0.72em;"> e </span>\(\sen n\pi = 0\)<span style="font-size: 0.72em;">.</span></aside>
+  <p class="fragment">Como \(\red{\cos n\pi = (-1)^n}\), temos \(1 - (-1)^n = 2\) para \(n\) ímpar e \(0\) para \(n\) par. Assim,</p>
+  <div class="eq fragment">\[ b_n = \begin{cases} \dfrac{4}{n\pi}, & n \mt{ ímpar},\\[4pt] 0, & n \mt{ par}, \end{cases} \]</div>
+  <p class="fragment sem-recuo">e a série de Fourier da onda quadrada é</p>
+  <div class="eq fragment caixa">\[ f(x) = \frac4\pi\left[ \sen\frac{\pi x}{L} + \frac13\sen\frac{3\pi x}{L} + \frac15\sen\frac{5\pi x}{L} + \cdots \right] = \frac4\pi\sum_{n \mt{ ímpar}}\frac1n\sen\frac{n\pi x}{L}. \]</div>
+  <p class="fragment">Note que só aparecem harmônicos ímpares. Isso não é coincidência, e será explicado logo após este exemplo. Note também que, em \(x = 0\), todos os senos se anulam e a série dá \(0\), que é exatamente a média do salto de \(-1\) para \(1\), como garante o Teorema de Fourier.</p>
+  <p class="fragment">O gráfico abaixo mostra as somas parciais \(S_N\) para alguns valores de \(N\). Observe como a aproximação melhora com \(N\), mas o "chifre" perto dos saltos (fenômeno de Gibbs) continua com a mesma altura, apenas mais estreito.</p>
+  <div class="rodape">5</div>
+</section>
+
+<!-- =============================== PÁGINA 6 =============================== -->
+<section class="pagina">
+  <!-- Para mudar as curvas, edite data-termos (valores de N) e data-cores. Cada curva é uma camada. -->
+  <svg class="grafico" viewBox="0 0 1000 400" data-fourier-quadrada="" data-termos="1,3,9,41" data-cores="#3333cc,#ff8000,#2a9d3a,#dd1111"></svg>
+  <p class="fragment">Por fim, observe que os coeficientes decaem como \(1/n\). Isso é típico de funções com saltos: a série precisa de muitos harmônicos altos para "construir" uma descontinuidade. Funções mais suaves têm coeficientes que decaem mais depressa, como veremos no próximo exemplo.</p>
+  <h3 class="fragment"><span class="rotulo">Simetria de meia onda.</span></h3>
+  <p class="fragment">No Exemplo 1, só apareceram harmônicos ímpares. Isso se deve a uma terceira simetria, menos conhecida e muito útil. Dizemos que \(f(x)\) tem <span class="rotulo">simetria de meia onda</span> se</p>
+  <div class="eq fragment">\[ f(x + L) = -f(x), \]</div>
+  <p class="fragment sem-recuo">isto é, a segunda metade do período é a primeira "de cabeça para baixo". No gráfico abaixo, a curva tracejada é a primeira metade apenas deslocada de \(L\); a segunda metade de \(f(x)\) é essa cópia refletida no eixo \(x\).</p>
+  <!-- Gráfico da simetria de meia onda. Cada parte é uma camada. -->
+  <svg class="grafico" viewBox="0 0 1000 400" data-tipo="meia-onda"></svg>
+  <div class="rodape">6</div>
+</section>
+
+<!-- =============================== PÁGINA 7 =============================== -->
+<section class="pagina">
+  <p class="fragment">Nesse caso, todos os harmônicos <span class="rotulo">pares</span> se anulam (\(a_n = b_n = 0\) para \(n\) par), e a série só tem harmônicos ímpares. A justificativa é que, para \(n\) par, \(\cos(n\pi x/L)\) e \(\sen(n\pi x/L)\) se repetem após um deslocamento de \(L\), enquanto \(f(x)\) troca de sinal; assim, nas integrais de \(a_n\) e \(b_n\), as contribuições das duas metades do período se cancelam.</p>
+  <aside class="nota fragment">*: Essa simetria será decisiva quando estudarmos a ressonância, na seção 9.</aside>
+  <p class="fragment">Atenção: a simetria de meia onda <span class="rotulo">não tem relação com a paridade</span>. Ela compara a função com ela mesma deslocada de meio período, e não refletida em torno da origem. A função do gráfico, por exemplo, não é par nem ímpar; já \(\cos(\pi x/L)\) é par e tem simetria de meia onda. A onda quadrada do Exemplo 1 tem as duas propriedades: é ímpar, por isso só tem senos, e tem simetria de meia onda, por isso só tem harmônicos ímpares.</p>
+  <h3 class="fragment"><span class="rotulo">Exemplo 2:</span> a onda triangular.</h3>
+  <p class="fragment">Encontre a série de Fourier da função de período \(2L\) dada por \(f(x) = |x|\) em \(-L \le x \le L\).</p>
+  <p class="fragment">Agora \(f\) é par. Logo, \(b_n = 0\), e calculamos os \(a_n\) em \([0, L]\), onde \(f(x) = x\). Para \(n = 0\),</p>
+  <div class="eq fragment">\[ a_0 = \frac2L\int_0^L x\,dx = \frac2L\cdot\frac{L^2}{2} = L. \]</div>
+  <aside class="nota fragment">*: Integração por partes, com \(u = x\) e \(dv = \cos\frac{n\pi x}{L}dx\).</aside>
+  <p class="fragment">Para \(n \ge 1\), integrando por partes,</p>
+  <div class="eq fragment">\[ \begin{aligned} a_n &= \frac2L\int_0^L x\cos\frac{n\pi x}{L}\,dx = \frac2L\left[\frac{L x}{n\pi}\sen\frac{n\pi x}{L} + \frac{L^2}{n^2\pi^2}\cos\frac{n\pi x}{L}\right]_0^L \\ &= \frac{2L}{n^2\pi^2}\big(\red{\cos n\pi} - 1\big). \end{aligned} \]</div>
+  <p class="fragment">Novamente, \(\cos n\pi - 1 = (-1)^n - 1\) vale \(-2\) para \(n\) ímpar e \(0\) para \(n\) par. Assim, \(a_n = -\dfrac{4L}{n^2\pi^2}\) para \(n\) ímpar e</p>
+  <div class="eq fragment caixa">\[ |x| = \frac L2 - \frac{4L}{\pi^2}\left[\cos\frac{\pi x}{L} + \frac19\cos\frac{3\pi x}{L} + \frac1{25}\cos\frac{5\pi x}{L} + \cdots\right], \qquad -L \le x \le L. \]</div>
+  <p class="fragment">Compare com o Exemplo 1. Aqui a função é contínua (só a derivada tem "bicos"), e os coeficientes decaem como \(1/n^2\), muito mais rápido. Na prática, poucos termos já dão uma excelente aproximação, e não há fenômeno de Gibbs. O termo \(L/2\) é o valor médio de \(|x|\) no período.</p>
+  <div class="rodape">7</div>
+</section>
+
+<!-- =============================== PÁGINA 8 =============================== -->
+<section class="pagina">
+  <p class="fragment">Note que aqui também só aparecem harmônicos ímpares (fora o termo constante), mas \(|x|\) <span class="rotulo">não</span> tem simetria de meia onda: ela nunca é negativa e, por exemplo, \(f(L) = L\), enquanto \(-f(0) = 0\). Quem tem a simetria é a função sem o valor médio, \(g(x) = |x| - L/2\). De fato, para \(-L &lt; x &lt; 0\),</p>
+  <div class="eq fragment">\[ g(x+L) = (x + L) - \tfrac{L}{2} = x + \tfrac{L}{2} = -\left(-x - \tfrac{L}{2}\right) = -g(x), \]</div>
+  <p class="fragment sem-recuo">e para \(0 &lt; x &lt; L\) a conta é análoga. Como subtrair uma constante só altera \(a_0\), os harmônicos pares se anulam do mesmo jeito. De modo geral, \(f(x)\) tem só harmônicos ímpares (fora o termo constante) quando \(f(x) - a_0/2\) tem simetria de meia onda.</p>
+  <!-- Gráfico da onda triangular: |x|, seu valor médio e |x| - L/2. Cada parte é uma camada. -->
+  <svg class="grafico" viewBox="0 0 1000 400" data-tipo="triangular"></svg>
+  <p class="fragment">Mais uma observação interessante: derivando a série termo a termo,</p>
+  <div class="eq fragment">\[ \frac{d}{dx}|x| = \frac{4L}{\pi^2}\sum_{n \mt{ ímpar}}\frac{1}{n^2}\cdot\frac{n\pi}{L}\sen\frac{n\pi x}{L} = \frac4\pi\sum_{n\mt{ ímpar}}\frac1n\sen\frac{n\pi x}{L}, \]</div>
+  <p class="fragment sem-recuo">que é exatamente a onda quadrada do Exemplo 1! E de fato, a derivada de \(|x|\) é \(-1\) para \(x &lt; 0\) e \(1\) para \(x &gt; 0\). Essa relação entre suavidade e decaimento dos coeficientes é uma das ideias mais úteis da teoria.</p>
+  <h2>7. Aplicação a EDOs: superposição</h2>
+  <p class="fragment">Agora usaremos a série de Fourier para resolver EDOs. Considere uma EDO linear com coeficientes constantes,</p>
+  <div class="eq fragment">\[ \mathcal{L}[y] = f(t), \]</div>
+  <div class="rodape">8</div>
+</section>
+
+<!-- =============================== PÁGINA 9 =============================== -->
+<section class="pagina">
+  <p class="fragment sem-recuo">onde \(\mathcal{L}[y]\) representa o lado esquerdo (por exemplo, \(\mathcal{L}[y] = a y' + y\) ou \(\mathcal{L}[y] = y'' + \omega^2 y\)) e \(f\) é periódica. Lembremos que a solução geral de uma EDO linear é sempre a soma da solução geral da homogênea com uma solução particular. A solução da homogênea não depende de \(f\); o trabalho todo está na solução particular.</p>
+  <p class="fragment">Se \(f(t) = f_1(t) + f_2(t) + \cdots\)&nbsp; e seja&nbsp;\(y_n\)&nbsp;uma solução particular de \(\mathcal{L}[y_n] = f_n\), então, pela linearidade,</p>
+  <div class="eq fragment">\[ \mathcal{L}[y_1 + y_2 + \cdots] = \mathcal{L}[y_1] + \mathcal{L}[y_2] + \cdots = f_1 + f_2 + \cdots = f. \]</div>
+  <p class="fragment sem-recuo">Ou seja, \(y_p = y_1 + y_2 + \cdots\) é uma solução particular da equação original. Esse é o <span class="rotulo">princípio da superposição</span>, e ele nos dá a seguinte estratégia:</p>
+  <div class="caixa fragment">
+    <ol>
+      <li>Escreva \(f\) como série de Fourier.</li>
+      <li>Para cada harmônico, ache a solução particular, que é a resposta a um único seno ou cosseno.</li>
+      <li>Some as respostas.</li>
+    </ol>
+  </div>
+  <p class="fragment">O passo 2 é o mesmo para todos os harmônicos, só muda a frequência. Então basta resolvê-lo <span class="rotulo">uma vez</span>, para uma senoide genérica \(b\sen\red c t\), e depois substituir \(\red c = n\pi/L\). É o que faremos nas próximas seções, para equações de primeira e de segunda ordem.</p>
+  <h2 class="fragment">8. Resposta a uma senoide: primeira ordem</h2>
+  <p class="fragment">Considere</p>
+  <div class="eq fragment">\[ a\,y' + y = b\sen\red c t, \qquad a &gt; 0. \]</div>
+  <p class="fragment sem-recuo">Pelo método dos coeficientes a determinar, procuramos \(y_p = A\sen\red c t + B\cos\red c t\). Então \(y_p' = A\red c\cos\red c t - B\red c\sen\red c t\) e, substituindo na EDO, temos</p>
+  <div class="eq fragment">\[ (A - a\red c B)\sen\red c t + (a\red c A + B)\cos\red c t = b\sen\red c t. \]</div>
+  <p class="fragment sem-recuo">Comparando os coeficientes, \(A - a\red c B = b\) e \(a\red c A + B = 0\). Da segunda, \(B = -a\red c A\); substituindo na primeira,</p>
+  <div class="eq fragment">\[ A\big(1 + (a\red c)^2\big) = b \Imp A = \frac{b}{1 + (a\red c)^2}, \qquad B = -\frac{ab\red c}{1 + (a\red c)^2}. \]</div>
+  <div class="rodape">9</div>
+</section>
+
+<!-- =============================== PÁGINA 10 =============================== -->
+<section class="pagina">
+  <aside class="nota fragment">*: Usamos \(A\sen\theta + B\cos\theta = R\sen(\theta - \varphi)\), com \(R = \sqrt{A^2 + B^2}\) e \(\tg\varphi = -B/A\).</aside>
+  <p class="fragment">É mais revelador escrever a resposta como uma única senoide, com amplitude e fase:</p>
+  <div class="eq fragment caixa">\[ y_p = \red{\frac{1}{\sqrt{1 + (ac)^2}}}\; b\sen(\red c t - \varphi), \qquad \tg\varphi = a\red c. \]</div>
+  <p class="fragment">Leia essa fórmula com calma. A resposta é uma senoide com a <span class="rotulo">mesma frequência</span> da entrada, mas com a amplitude multiplicada pelo fator em vermelho, que chamaremos de <span class="rotulo">ganho</span>, e atrasada de \(\varphi\).&nbsp;</p>
+  <p class="fragment">Agora, se a entrada for a onda quadrada do Exemplo 1 (na variável \(t\)), o \(n\)-ésimo harmônico tem amplitude \(4/(n\pi)\) e frequência \(\red{c_n} = n\pi/L\). Pela superposição,</p>
+  <div class="eq fragment">\[ y_p(t) = \frac4\pi\sum_{n\mt{ ímpar}} \frac1n\cdot\red{\frac{1}{\sqrt{1 + (a c_n)^2}}}\,\sen\!\left(\red{c_n}t - \varphi_n\right), \qquad \tg\varphi_n = a\red{c_n}. \]</div>
+  <h2 class="fragment">9. Resposta a uma senoide: segunda ordem</h2>
+  <p class="fragment">Considere agora, sem amortecimento,</p>
+  <div class="eq fragment">\[ y'' + \omega^2 y = b\sen\red c t, \]</div>
+  <p class="fragment sem-recuo">cuja homogênea tem soluções \(\cos\omega t\) e \(\sen\omega t\). Chamamos \(\omega\) de <span class="rotulo">frequência natural</span>. Há dois casos.</p>
+  <p class="fragment"><span class="rotulo">Caso \(\red c \ne \omega\)&nbsp;(caso geral).</span> Como não há termo em \(y'\), basta tentar \(y_p = A\sen\red c t\): \(\;-A\red c^2 + \omega^2 A = b\), logo</p>
+  <div class="eq fragment">\[ y_p = \frac{b}{\omega^2 - \red c^2}\sen\red c t. \]</div>
+  <aside class="nota fragment">*: Já vimos esse caso: quando a força externa é solução da homogênea, multiplicamos a tentativa por \(t\).</aside>
+  <p class="fragment"><span class="rotulo">Caso \(\red c = \omega\) (ressonância).</span> Agora \(\sen\omega t\) é solução da homogênea, e a tentativa é \(y_p = t(A\cos\omega t + B\sen\omega t)\). As contas levam a</p>
+  <div class="eq fragment caixa">\[ y_p = \red{-\frac{b\,t}{2\omega}}\cos\omega t. \]</div>
+  <p class="fragment">Sempre podemos verificar a solução. Derivando duas vezes,</p>
+  <div class="eq fragment">\[ y_p'' = b\sen\omega t + \frac{b\omega}{2}\,t\cos\omega t \Imp y_p'' + \omega^2 y_p = b\sen\omega t + \frac{b\omega}{2}t\cos\omega t - \frac{b\omega}{2}t\cos\omega t \]
+  \[ \Imp y_p'' + \omega^2 y_p = b\sen\omega t. \]</div>
+  <div class="rodape">10</div>
+</section>
+
+<!-- =============================== PÁGINA 11 =============================== -->
+<section class="pagina">
+  <p class="fragment">A amplitude de&nbsp;\(bt/(2\omega)\) <span class="rotulo">cresce sem limite</span> com o tempo. Esse é o fenômeno da ressonância.&nbsp;Você deve estar atento à possibilidade de haver um harmônico ressonante, e tratar este caso separadamente dos demais harmônicos.</p>
+  <p class="fragment">Se \(f\) é periódica de período \(2L\), sua série contém as frequências \(\red{c_n} = n\pi/L\), \(n = 1, 2, 3, \ldots\) Assim:</p>
+  <div class="caixa fragment">
+    <p class="sem-recuo">Há ressonância se <span class="rotulo">algum</span> harmônico presente na série de \(f\) tiver frequência igual a \(\omega\), isto é, se \(n\pi/L = \omega\) para algum \(n\) com coeficiente não nulo.&nbsp;</p>
+  </div>
+  <p class="fragment">Uma força externa de frequência fundamental bem diferente de \(\omega\) pode, portanto, provocar ressonância através de um de seus harmônicos. E, ao contrário, a ausência de certos harmônicos (por exemplo, por simetria de meia onda) pode impedir uma ressonância que parecia inevitável. O exemplo a seguir mostra os dois casos.</p>
+  <h3 class="fragment"><span class="rotulo">Exemplo 3:</span> ressonância num harmônico.</h3>
+  <p class="fragment">Seja \(f\) a onda quadrada do Exemplo 1, com período \(2L = 3\pi\). Encontre uma solução particular de</p>
+  <div class="eq fragment">\[ y'' + 4y = f(t). \]</div>
+  <p class="fragment">Aqui \(\omega = 2\) e \(L = 3\pi/2\), de modo que as frequências da série são \(\red{c_n} = n\pi/L = 2n/3\), para \(n\) ímpar (simetria de meia onda). A fundamental é \(\red{c_1} = 2/3\), bem abaixo de \(\omega = 2\). Mas, para \(n = 3\), \(\red{c_3} = 2 = \omega\): o terceiro harmônico está em ressonância.</p>
+  <p class="fragment">Para \(n \ne 3\), estamos no caso \(\red c \ne \omega\), com \(b_n = 4/n\pi\)&nbsp;(onda quadrada), logo&nbsp;</p>
+  <div class="eq fragment">\[ y_p = \frac{b}{\omega^2 - \red c^2}\sen\red c t \Imp y_n = \frac{4}{n\pi}\cdot\frac{1}{4 - 4n^2/9}\sen\frac{2nt}{3} \]</div>
+  <div class="eq fragment">\[ y_n  = \frac{9}{n\pi(9 - n^2)}\sen\frac{2nt}{3}. \]</div>
+  <p class="fragment">Para \(n = 3\), temos o caso ressonante com \(b = 4/(3\pi)\):</p>
+  <div class="eq fragment">\[ y_3 =  \red{-\frac{b\,t}{2\omega}}\cos\omega t = -\frac{4}{3\pi}\cdot\frac{t}{2\cdot 2}\cos 2t = \red{-\frac{t}{3\pi}\cos 2t}. \]</div>
+  <div class="rodape">11</div>
+</section>
+
+<!-- =============================== PÁGINA 12 =============================== -->
+<section class="pagina">
+  <p class="fragment">Logo,</p>
+  <div class="eq fragment caixa">\[ y_p(t) = -\frac{t}{3\pi}\cos 2t + \sum_{\substack{n\mt{ ímpar}\\ n\ne 3}}\frac{9}{n\pi(9 - n^2)}\sen\frac{2nt}{3}. \]</div>
+  <p class="fragment"><span style="text-indent: 2em;">E se o período fosse </span>\(2\pi\)<span style="text-indent: 2em;">? Então </span>\(L = \pi\)<span style="text-indent: 2em;"> e </span>\(\red{c_n} = n\pi/L = n\)<span style="text-indent: 2em;">. Seria natural pensar que o segundo harmônico (</span>\(\red{c_2} = 2\)<span style="text-indent: 2em;">) entra em ressonância. Mas a onda quadrada </span><span class="rotulo" style="text-indent: 2em;">não tem harmônicos pares</span><span style="text-indent: 2em;">, por causa da simetria de meia onda. Assim, nenhum harmônico tem frequência </span>\(2\)<span style="text-indent: 2em;">, e </span><span class="rotulo" style="text-indent: 2em;">não há ressonância</span><span style="text-indent: 2em;">. Em geral, para a onda quadrada e </span>\(\omega = 2\)<span style="text-indent: 2em;">, há ressonância exatamente quando </span>\(2L = n\pi\)<span style="text-indent: 2em;"> para algum </span>\(n\)<span style="text-indent: 2em;"> ímpar.</span></p>
+  <h2>10. Um atalho: a exponencial complexa</h2>
+  <p class="fragment">Nas seções 8 e 9, refizemos o método dos coeficientes a determinar para cada equação. Há um caminho mais curto, que será muito usado nas disciplinas seguintes, usando a fórmula de Euler, \(e^{i\red c t} = \cos\red c t + i\sen\red c t\). Se acharmos a resposta à entrada complexa \(e^{i\red c t}\), a resposta a \(\sen\red c t\) será sua parte imaginária.</p>
+  <p class="fragment">Tentando \(y_p = H\,e^{i\red c t}\), cada derivada apenas multiplica por \(i\red c\). Então:</p>
+  <div class="eq fragment">\[ a\,y' + y = e^{i\red c t} \Imp (i a\red c + 1)H = 1 \Imp H(i\red c) = \frac{1}{1 + i a\red c}, \]</div>
+  <div class="eq fragment">\[ y'' + \omega^2 y = e^{i\red c t} \Imp (-\red c^2 + \omega^2)H = 1 \Imp H(i\red c) = \frac{1}{\omega^2 - \red c^2}. \]</div>
+  <aside class="nota fragment">*: \(H\) é a mesma função de transferên- cia obtida com a transformada de Laplace, avaliada em \(s = i\red c\).</aside>
+  <p class="fragment">O número complexo \(H(i\red c)\) contém toda a informação: o ganho é \(|H(i\red c)|\) e a defasagem é \(-\arg H(i\red c)\). Por exemplo, \(|1/(1 + ia\red c)| = 1/\sqrt{1 + (a\red c)^2}\), exatamente o ganho da seção 8, sem refazer conta nenhuma. Com isso, a resposta a uma entrada periódica qualquer se resume a: <span class="rotulo">cada harmônico sai multiplicado por \(H\) avaliado na sua frequência</span>.</p>
+  <div class="rodape">12</div>
+</section>
+
+<!-- =============================== PÁGINA 13 =============================== -->
+<section class="pagina">
+  <h2 class="fragment">Resumo</h2>
+  <div class="caixa fragment">
+    <ul>
+      <li>Uma função periódica de período \(2L\) se escreve como soma de harmônicos de frequências \(n\pi/L\) (seção 2).</li>
+      <li>Senos e cossenos são ortogonais; por isso cada coeficiente é uma integral, uma "projeção" (seções 3 e 4).</li>
+      <li>A série converge para \(f\) nos pontos de continuidade e para a média nos saltos; perto dos saltos ocorre o fenômeno de Gibbs (seção 5).</li>
+      <li>Função par: só cossenos. Ímpar: só senos. Meia onda: só harmônicos ímpares (seção 6).</li>
+      <li>Saltos dão coeficientes \(\sim 1/n\); funções contínuas com "bicos", \(\sim 1/n^2\) (Exemplos 1 e 2).</li>
+      <li>Para EDOs lineares, resolva cada harmônico e some (superposição).&nbsp;</li><li>A 2ª ordem ressoa se algum harmônico coincidir com \(\omega\) (seção 9).</li>
+    </ul>
+  </div>
+  <p class="fragment sem-recuo" style="font-size:.85em">Leitura no livro: Boyce &amp; DiPrima, seções 10.2 (séries de Fourier), 10.3 (teorema de convergência) e 10.4 (funções pares e ímpares).</p>
+  <div class="rodape">13</div>
+</section>
+
+</main>
+<div id="editor-eq" hidden="">
+  <div>Fórmula em LaTeX <span style="color:#888">(Ctrl+Enter aplica, Esc cancela)</span></div>
+  <textarea id="ee-tex" rows="3" spellcheck="false" style="width: 750px; height: 165px;"></textarea>
+  <div id="ee-previa"></div>
+  <label><input type="checkbox" id="ee-display"> destacada (linha própria, centralizada)</label>
+  <div class="ee-botoes"><button type="button" id="ee-remover">Remover</button><button type="button" id="ee-cancelar">Cancelar</button><button type="button" id="ee-aplicar">Aplicar</button></div>
+</div>
+<div id="passos"><button id="ant" title="Camada anterior (←)">◀</button><span id="contador"></span><button id="prox" title="Próxima camada (→)">▶</button></div>
+
+<script>
+  // ---------- modo leitura (padrão) x modo aula (?aula) ----------
+  const MODO_AULA = new URLSearchParams(location.search).has('aula');
+  const botao = document.getElementById('modo');
+  botao.textContent = MODO_AULA ? 'Modo leitura' : 'Modo aula';
+  botao.href = MODO_AULA ? location.pathname : location.pathname + '?aula';
+
+  // ---------- gráfico das somas parciais (não precisa editar) ----------
+  function desenharQuadrada(svg) {
+    const termos = svg.dataset.termos.split(',').map(Number);
+    const cores = (svg.dataset.cores || '').split(',');
+    const W = 1000, H = 400, x0 = 30, x1 = 970, yc = H / 2, esc = 140;
+    const X = u => x0 + (u + 2) / 4 * (x1 - x0);       // u em [-2, 2] (L = 1)
+    const Y = v => yc - v * esc;
+    const ns = 'http://www.w3.org/2000/svg';
+    const el = (tag, at) => { const e = document.createElementNS(ns, tag); for (const k in at) e.setAttribute(k, at[k]); return e; };
+    svg.append(el('line', {x1: x0, y1: yc, x2: x1, y2: yc, class: 'eixo'}));
+    svg.append(el('line', {x1: X(0), y1: 10, x2: X(0), y2: H - 10, class: 'eixo'}));
+    let d = '';
+    [[-2,-1,-1],[-1,0,1],[0,1,-1],[1,2,1]].forEach(([a,b,s]) => { d += `M${X(a)},${Y(-s)} L${X(b)},${Y(-s)} `; });
+    svg.append(el('path', {d, class: 'alvo'}));
+    termos.forEach((N, k) => {
+      let p = '';
+      for (let i = 0; i <= 1200; i++) {
+        const u = -2 + 4 * i / 1200;
+        let s = 0;
+        for (let n = 1; n <= N; n += 2) s += Math.sin(n * Math.PI * u) / n;
+        s *= 4 / Math.PI;
+        p += (i ? 'L' : 'M') + X(u).toFixed(1) + ',' + Y(s).toFixed(1);
+      }
+      const g = el('g', {class: 'fragment'});
+      g.append(el('path', {d: p, class: 'soma', stroke: cores[k] || '#3333cc'}));
+      const t = el('text', {x: x1 - 6, y: 26 + 28 * k, 'text-anchor': 'end', fill: cores[k] || '#3333cc', 'font-size': 24});
+      t.textContent = 'N = ' + N;
+      g.append(t);
+      svg.append(g);
+    });
+  }
+  document.querySelectorAll('svg[data-fourier-quadrada]').forEach(desenharQuadrada);
+
+  // ---------- gráficos da simetria de meia onda e da onda triangular (não precisa editar) ----------
+  function desenharCurvas(svg) {
+    const tipo = svg.dataset.tipo;
+    const ns = 'http://www.w3.org/2000/svg';
+    const el = (tag, at) => { const e = document.createElementNS(ns, tag); for (const k in at) e.setAttribute(k, at[k]); return e; };
+    const txt = (x, y, t, cor, anc, g) => { const e = el('text', {x, y, fill: cor, 'font-size': 24, 'text-anchor': anc || 'middle', 'font-style': 'italic'}); e.textContent = t; (g || svg).append(e); };
+    const H = 400, x0 = 40, x1 = 960;
+    let u0, u1, v0, v1;
+    if (tipo === 'meia-onda') { u0 = -0.15; u1 = 2.15; v0 = -1.6; v1 = 1.6; }
+    else { u0 = -2; u1 = 2; v0 = -0.75; v1 = 1.25; }
+    const X = u => x0 + (u - u0) / (u1 - u0) * (x1 - x0);
+    const Y = v => 20 + (v1 - v) / (v1 - v0) * (H - 60);
+    const curva = (f, a, b, at) => { let d = ''; for (let i = 0; i <= 600; i++) { const u = a + (b - a) * i / 600; d += (i ? 'L' : 'M') + X(u).toFixed(1) + ',' + Y(f(u)).toFixed(1); } return el('path', Object.assign({d, fill: 'none', 'stroke-width': 3}, at)); };
+    svg.append(el('line', {x1: x0, y1: Y(0), x2: x1, y2: Y(0), class: 'eixo'}));
+    const marca = (u, t, dx, anc) => { svg.append(el('line', {x1: X(u), y1: Y(0) - 6, x2: X(u), y2: Y(0) + 6, class: 'eixo'})); txt(X(u) + (dx || 0), Y(0) + 32, t, '#666', anc); };
+    if (tipo === 'meia-onda') {
+      const f = u => Math.sin(Math.PI * u) + 0.45 * Math.sin(3 * Math.PI * u + 0.9);
+      marca(0, '0'); marca(1, 'L', -18, 'end'); marca(2, '2L', 10, 'start');
+      svg.append(el('line', {x1: X(1), y1: 15, x2: X(1), y2: H - 15, stroke: '#bbb', 'stroke-dasharray': '6 6'}));
+      const g1 = el('g', {class: 'fragment'}); g1.append(curva(f, 0, 1, {stroke: '#3333cc'})); txt(X(0.5), Y(1.45), 'primeira metade', '#3333cc', 'middle', g1); svg.append(g1);
+      const g2 = el('g', {class: 'fragment'}); g2.append(curva(u => f(u - 1), 1, 2, {stroke: '#999', 'stroke-dasharray': '10 8'})); txt(X(1.5), Y(1.45), 'cópia deslocada de L', '#888', 'middle', g2); svg.append(g2);
+      const g3 = el('g', {class: 'fragment'}); g3.append(curva(f, 1, 2, {stroke: '#ff8000'})); txt(X(1.5), Y(-1.45), 'f(x + L) = −f(x)', '#ff8000', 'middle', g3); svg.append(g3);
+    } else {
+      const f = u => { const w = ((u + 1) % 2 + 2) % 2 - 1; return Math.abs(w); };
+      [[-2, '−2L'], [-1, '−L'], [0, '0'], [1, 'L'], [2, '2L']].forEach(([u, t]) => marca(u, t));
+      const g1 = el('g', {class: 'fragment'}); g1.append(curva(f, u0, u1, {stroke: '#111'})); txt(X(-1.5), Y(1.1), '|x|', '#111', 'middle', g1); svg.append(g1);
+      const g2 = el('g', {class: 'fragment'}); g2.append(el('line', {x1: x0, y1: Y(0.5), x2: x1, y2: Y(0.5), stroke: '#ff8000', 'stroke-width': 2, 'stroke-dasharray': '10 8'})); txt(x1, Y(0.5) - 10, 'média L/2', '#ff8000', 'end', g2); svg.append(g2);
+      const g3 = el('g', {class: 'fragment'}); g3.append(curva(u => f(u) - 0.5, u0, u1, {stroke: '#3333cc'})); txt(X(0.5), Y(-0.62), 'g(x) = |x| − L/2', '#3333cc', 'middle', g3); svg.append(g3);
+    }
+  }
+  document.querySelectorAll('svg[data-tipo]').forEach(desenharCurvas);
+
+  // ---------- modo aula: camadas aparecem uma a uma ----------
+  function prepararAula() {
+    if (!MODO_AULA) return;
+    document.body.classList.add('aula');
+    // agrupa elementos com o mesmo data-junto em uma única camada
+    const passos = [];
+    document.querySelectorAll('.fragment').forEach(el => {
+      const j = el.getAttribute('data-junto');
+      const ult = passos[passos.length - 1];
+      if (j && ult && ult.junto === j) ult.els.push(el);
+      else passos.push({ junto: j, els: [el] });
+    });
+    let k = 0;   // camadas visíveis
+    const cont = document.getElementById('contador');
+    const atualizar = () => { cont.textContent = k + ' / ' + passos.length; };
+    const prox = () => {
+      if (k >= passos.length) return;
+      const p = passos[k++];
+      p.els.forEach(e => e.classList.add('visivel'));
+      p.els[p.els.length - 1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      atualizar();
+    };
+    const ant = () => {
+      if (k <= 0) return;
+      const p = passos[--k];
+      p.els.forEach(e => e.classList.remove('visivel'));
+      const v = passos[k - 1];
+      if (v) v.els[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      atualizar();
+    };
+    document.addEventListener('keydown', ev => {
+      if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
+      if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(ev.key)) { ev.preventDefault(); prox(); }
+      else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(ev.key)) { ev.preventDefault(); ant(); }
+    });
+    document.getElementById('prox').onclick = prox;
+    document.getElementById('ant').onclick = ant;
+    atualizar();
+  }
+  prepararAula();
+
+  // ---------- modo edição (não precisa editar) ----------
+  const ED = { range: null, bloco: null, alvo: null, modo: null, handle: null, sujo: false };
+  const $ = id => document.getElementById(id);
+  const BLOCOS = 'p, div.eq, div.caixa, h1, h2, h3, aside.nota, li, .subtitulo';
+
+  function guardarTex() {
+    for (const it of MathJax.startup.document.math) {
+      const c = it.typesetRoot; if (!c) continue;
+      c.dataset.tex = it.math; c.dataset.display = it.display ? '1' : '0';
+      c.setAttribute('contenteditable', 'false');
+    }
+  }
+  async function renderTex(tex, display) {
+    const c = await MathJax.tex2svgPromise(tex, { display });
+    c.dataset.tex = tex; c.dataset.display = display ? '1' : '0';
+    c.setAttribute('contenteditable', 'false');
+    return c;
+  }
+  function avisar(t) { $('aviso').textContent = t; clearTimeout(avisar.t); avisar.t = setTimeout(() => $('aviso').textContent = '', 2500); }
+
+  function entrarEdicao() {
+    document.body.classList.add('editando');
+    try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch (e) {}
+    document.querySelectorAll('section.pagina').forEach(s => s.setAttribute('contenteditable', 'true'));
+  }
+  function sairEdicao() {
+    document.body.classList.remove('editando');
+    document.querySelectorAll('section.pagina').forEach(s => s.removeAttribute('contenteditable'));
+    $('editor-eq').hidden = true;
+  }
+
+  // posição atual do cursor dentro da apostila
+  document.addEventListener('selectionchange', () => {
+    if (!document.body.classList.contains('editando')) return;
+    const sel = getSelection(); if (!sel.rangeCount) return;
+    const r = sel.getRangeAt(0);
+    const n = r.startContainer.nodeType === 1 ? r.startContainer : r.startContainer.parentElement;
+    if (!n || !n.closest('section.pagina') || n.closest('#editor-eq')) return;
+    ED.range = r.cloneRange();
+    ED.bloco = n.closest(BLOCOS) || null;
+    $('b-camada').classList.toggle('ligada', !!(ED.bloco && ED.bloco.classList.contains('fragment')));
+  });
+  document.addEventListener('input', e => { if (e.target.closest && e.target.closest('section.pagina')) ED.sujo = true; });
+
+  // barra: mousedown não tira o cursor do texto
+  document.querySelectorAll('#barra button').forEach(b => b.addEventListener('mousedown', e => e.preventDefault()));
+
+  $('b-camada').onclick = () => {
+    if (!ED.bloco) return avisar('Clique num parágrafo');
+    ED.bloco.classList.toggle('fragment'); ED.sujo = true;
+    $('b-camada').classList.toggle('ligada', ED.bloco.classList.contains('fragment'));
+  };
+  $('b-laranja').onclick = () => {
+    const sel = getSelection(); if (!sel.rangeCount) return;
+    const r = sel.getRangeAt(0);
+    const n = r.startContainer.nodeType === 1 ? r.startContainer : r.startContainer.parentElement;
+    const span = n && n.closest('span.rotulo');
+    if (span) { span.replaceWith(...span.childNodes); ED.sujo = true; return; }
+    if (r.collapsed) return avisar('Selecione o texto');
+    const s = document.createElement('span'); s.className = 'rotulo';
+    s.append(r.extractContents()); r.insertNode(s); ED.sujo = true;
+  };
+  $('b-nota').onclick = () => {
+    if (!ED.bloco) return avisar('Clique num parágrafo');
+    const a = document.createElement('aside'); a.className = 'nota'; a.textContent = '*:\u00a0';
+    ED.bloco.before(a); ED.sujo = true;
+    const r = document.createRange(); r.selectNodeContents(a); r.collapse(false);
+    getSelection().removeAllRanges(); getSelection().addRange(r);
+  };
+  $('b-inline').onclick = () => { if (!ED.range) return avisar('Clique no texto'); abrirEditor(null, 'inline', '', false); };
+  $('b-display').onclick = () => { if (!ED.bloco) return avisar('Clique num parágrafo'); abrirEditor(null, 'bloco', '', true); };
+
+  // editor de fórmulas
+  function abrirEditor(alvo, modo, tex, display) {
+    ED.alvo = alvo; ED.modo = modo;
+    $('ee-tex').value = tex; $('ee-display').checked = display;
+    $('ee-remover').style.display = alvo ? '' : 'none';
+    $('editor-eq').hidden = false; previa(); $('ee-tex').focus();
+  }
+  async function previa() {
+    const t = $('ee-tex').value.trim();
+    $('ee-previa').innerHTML = '';
+    if (!t) return;
+    try {
+      const c = await MathJax.tex2svgPromise(t, { display: $('ee-display').checked });
+      $('ee-previa').append(c);
+    } catch (e) { $('ee-previa').textContent = 'Erro: ' + e.message; }
+  }
+  $('ee-tex').addEventListener('input', () => { clearTimeout(previa.t); previa.t = setTimeout(previa, 250); });
+  $('ee-display').onchange = previa;
+  $('ee-cancelar').onclick = () => { $('editor-eq').hidden = true; };
+  $('ee-remover').onclick = () => {
+    const pai = ED.alvo.parentElement; ED.alvo.remove();
+    if (pai.matches('div.eq') && !pai.textContent.trim() && !pai.querySelector('mjx-container')) pai.remove();
+    ED.sujo = true; $('editor-eq').hidden = true;
+  };
+  $('ee-aplicar').onclick = async () => {
+    const t = $('ee-tex').value.trim(); if (!t) return;
+    const c = await renderTex(t, $('ee-display').checked);
+    if (ED.alvo) ED.alvo.replaceWith(c);
+    else if (ED.modo === 'inline') { ED.range.collapse(false); ED.range.insertNode(c); }
+    else { const d = document.createElement('div'); d.className = 'eq'; d.append(c); ED.bloco.after(d); }
+    ED.sujo = true; $('editor-eq').hidden = true;
+  };
+  $('ee-tex').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $('ee-aplicar').click(); }
+    if (e.key === 'Escape') $('ee-cancelar').click();
+  });
+  document.addEventListener('click', e => {
+    if (!document.body.classList.contains('editando')) return;
+    const c = e.target.closest && e.target.closest('section.pagina mjx-container');
+    if (!c) return;
+    e.preventDefault();
+    abrirEditor(c, null, c.dataset.tex || '', c.dataset.display === '1');
+  });
+
+  // salvar: devolve as fórmulas para LaTeX e grava o HTML
+  function gerarHTML() {
+    const doc = document.documentElement.cloneNode(true);
+    doc.querySelectorAll('mjx-container').forEach(c => {
+      const t = c.dataset.tex; if (t == null) { c.remove(); return; }
+      c.replaceWith(document.createTextNode(c.dataset.display === '1' ? '\\[ ' + t.trim() + ' \\]' : '\\(' + t + '\\)'));
+    });
+    doc.querySelectorAll('[id^="MJX"], head style[type="text/css"], head script[src*="/extensions/"], head script[src*="/output/"], head script[src*="/input/"]').forEach(e => e.remove());
+    doc.querySelectorAll('[style=""]').forEach(e => e.removeAttribute('style'));
+    doc.querySelectorAll('[contenteditable]').forEach(e => e.removeAttribute('contenteditable'));
+    doc.querySelectorAll('.visivel').forEach(e => e.classList.remove('visivel'));
+    doc.querySelectorAll('svg[data-fourier-quadrada], svg[data-tipo]').forEach(e => { e.innerHTML = ''; });
+    doc.querySelectorAll('[class=""]').forEach(e => e.removeAttribute('class'));
+    doc.querySelector('body').removeAttribute('class');
+    doc.querySelector('#editor-eq').hidden = true;
+    doc.querySelector('#ee-previa').innerHTML = '';
+    doc.querySelector('#ee-remover').removeAttribute('style');
+    doc.querySelector('#b-camada').classList.remove('ligada');
+    doc.querySelector('#ee-tex').value = '';
+    doc.querySelector('#aviso').textContent = '';
+    doc.querySelector('#contador').textContent = '';
+    const m = doc.querySelector('#modo'); m.textContent = 'Modo aula'; m.setAttribute('href', '#');
+    // dentro das fórmulas, mantém "&" legível no código (ex.: \begin{cases} a & b)
+    const html = doc.outerHTML.replace(/\\[\[(][\s\S]*?\\[\])]/g, m => m.replace(/&amp;/g, '&'));
+    return '<!doctype html>\n' + html.replace('<html lang="pt-BR" data-theme="light"><head>', '<html lang="pt-BR" data-theme="light">\n<head>') + '\n';
+  }
+  async function salvar() {
+    const html = gerarHTML();
+    const nome = decodeURIComponent(location.pathname.split('/').pop() || '') || 'apostila.html';
+    try {
+      if (window.showSaveFilePicker) {
+        if (!ED.handle) ED.handle = await showSaveFilePicker({ suggestedName: nome, types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }] });
+        const w = await ED.handle.createWritable(); await w.write(html); await w.close();
+      } else {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+        a.download = nome; document.body.append(a); a.click(); a.remove();
+      }
+      ED.sujo = false; avisar('Salvo ✓');
+    } catch (e) { if (e.name !== 'AbortError') avisar('Erro ao salvar'); }
+  }
+  $('b-salvar').onclick = salvar;
+  $('b-sair').onclick = sairEdicao;
+  $('editar').onclick = entrarEdicao;
+  document.addEventListener('keydown', e => {
+    if (document.body.classList.contains('editando') && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); salvar(); }
+  });
+  window.addEventListener('beforeunload', e => { if (ED.sujo) { e.preventDefault(); e.returnValue = ''; } });
+  if (new URLSearchParams(location.search).has('editar') && !MODO_AULA) entrarEdicao();
+
+  MathJax.startup.promise.then(() => MathJax.typesetPromise()).then(guardarTex);
+</script>
+
+
+
+
+
+
+
+</body></html>
