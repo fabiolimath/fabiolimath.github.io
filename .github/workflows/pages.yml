@@ -1,0 +1,47 @@
+# Publica o site no GitHub Pages.
+# Roda quando algo chega na branch main (por exemplo, ao mesclar um PR)
+# e também pode ser disparado à mão na aba Actions ("Run workflow").
+name: Publicar no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Só uma publicação por vez; a mais nova substitui a que estiver na fila.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar o Pages
+        uses: actions/configure-pages@v5
+
+      - name: Montar o site (só os arquivos públicos)
+        run: |
+          mkdir _site
+          cp index.html .nojekyll _site/
+          cp -r disciplinas _site/
+
+      - name: Enviar o site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Publicar
+        id: deploy
+        uses: actions/deploy-pages@v4
