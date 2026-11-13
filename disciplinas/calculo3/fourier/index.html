@@ -137,7 +137,12 @@
     font: 14px system-ui, sans-serif; background: #fff; color: #333;
     border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
   #editar:hover { background: #f3f3f3; }
-  body.aula #editar, body.editando #editar, body.editando #modo { display: none; }
+  #salvar-leitura { position: fixed; top: 10px; right: 181px; z-index: 50;
+    font: 14px system-ui, sans-serif; background: #fff; color: #333;
+    border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+  #salvar-leitura:hover { background: #f3f3f3; }
+  body.aula #editar, body.editando #editar, body.editando #modo,
+  body.aula #salvar-leitura, body.editando #salvar-leitura { display: none; }
   #barra { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 60;
     background: #fafafa; border-bottom: 1px solid #ccc; padding: 6px 10px; gap: 6px; flex-wrap: wrap;
     justify-content: center; align-items: center; font: 14px system-ui, sans-serif; color: #333; }
@@ -164,7 +169,7 @@
   #editor-eq .ee-botoes { display: flex; gap: 6px; justify-content: flex-end; margin-top: 8px; }
   #editor-eq button { font: inherit; border: 1px solid #ccc; background: #fff; border-radius: 5px; padding: 5px 12px; cursor: pointer; }
   #ee-aplicar { background: #2a6 !important; color: #fff; border-color: #2a6 !important; }
-  @media print { #editar, #barra, #editor-eq { display: none !important; } }
+  @media print { #editar, #salvar-leitura, #barra, #editor-eq { display: none !important; } }
 </style>
 <script>
   window.MathJax = {
@@ -189,6 +194,7 @@
 <body>
 <a id="modo" href="#">Modo aula</a>
 <button id="editar" type="button">Editar</button>
+<button id="salvar-leitura" type="button" title="Salva uma cópia desta apostila (Ctrl+S)">Salvar</button>
 <div id="barra">
   <button type="button" id="b-camada" title="Liga/desliga: o parágrafo onde está o cursor aparece por clique no modo aula">Camada</button>
   <span class="sep"></span>
@@ -587,7 +593,11 @@
     c.setAttribute('contenteditable', 'false');
     return c;
   }
-  function avisar(t) { $('aviso').textContent = t; clearTimeout(avisar.t); avisar.t = setTimeout(() => $('aviso').textContent = '', 2500); }
+  function avisar(t) {
+    const b = $('salvar-leitura');
+    $('aviso').textContent = t; b.textContent = t;
+    clearTimeout(avisar.t); avisar.t = setTimeout(() => { $('aviso').textContent = ''; b.textContent = 'Salvar'; }, 2500);
+  }
 
   function entrarEdicao() {
     document.body.classList.add('editando');
@@ -705,6 +715,7 @@
     doc.querySelector('#b-camada').classList.remove('ligada');
     doc.querySelector('#ee-tex').value = '';
     doc.querySelector('#aviso').textContent = '';
+    doc.querySelector('#salvar-leitura').textContent = 'Salvar';
     doc.querySelector('#contador').textContent = '';
     const m = doc.querySelector('#modo'); m.textContent = 'Modo aula'; m.setAttribute('href', '#');
     limparExtensoes(doc);
@@ -768,8 +779,9 @@
   $('b-salvar').onclick = salvar;
   $('b-sair').onclick = sairEdicao;
   $('editar').onclick = entrarEdicao;
+  $('salvar-leitura').onclick = salvar;
   document.addEventListener('keydown', e => {
-    if (document.body.classList.contains('editando') && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); salvar(); }
+    if (!document.body.classList.contains('aula') && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); salvar(); }
   });
   window.addEventListener('beforeunload', e => { if (ED.sujo) { e.preventDefault(); e.returnValue = ''; } });
   if (new URLSearchParams(location.search).has('editar') && !MODO_AULA) entrarEdicao();
