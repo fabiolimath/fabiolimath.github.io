@@ -214,7 +214,7 @@
   <aside class="nota fragment">*: O livro usa \(x\) como variável inde- pendente nesse capítulo. Nas aplica- ções a EDOs, voltaremos a usar \(t\).</aside>
   <p class="fragment">Seja \(f\) uma função periódica de período \(2L\), isto é, \(f(x+2L) = f(x)\) para todo \(x\). Sua <span class="rotulo">série de Fourier</span> é</p>
   <div class="eq fragment caixa">\[ f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty}\left[ a_n\cos\frac{n\pi x}{L} + b_n\sen\frac{n\pi x}{L} \right]. \]</div>
-  <p class="fragment">Note que cada termo \(\cos(n\pi x/L)\) e \(\sen(n\pi x/L)\) também tem período \(2L\) (na verdade, período \(2L/n\)), de modo que a soma inteira se repete a cada \(2L\), como \(f(x)\). O termo de ordem \(n\) é chamado de <span class="rotulo">\(n\)-ésimo harmônico</span>, e sua frequência é \(n\pi/L\). O primeiro harmônico (\(n = 1\)) é a <span class="rotulo">fundamental</span>.</p>
+  <p class="fragment">Note que cada termo \(\cos(n\pi x/L)\) e \(\sen(n\pi x/L)\) também têm período \(2L\) (na verdade, período \(2L/n\)), de modo que a soma inteira se repete a cada \(2L\), como \(f(x)\). O termo de ordem \(n\) é chamado de <span class="rotulo">\(n\)-ésimo harmônico</span>, e sua frequência é \(n\pi/L\). O primeiro harmônico (\(n = 1\)) é a <span class="rotulo">fundamental</span>.</p>
   <p class="fragment">Restam duas perguntas: como calcular os coeficientes \(a_n\) e \(b_n\)? E a série realmente converge para \(f(x)\)? Começamos pela primeira, que depende de uma propriedade muito especial dos senos e cossenos.</p>
   <div class="rodape">1</div>
 </section>
@@ -242,11 +242,11 @@
 <!-- =============================== PÁGINA 3 =============================== -->
 <section class="pagina">
   <h2>4. Os coeficientes (fórmulas de Euler–Fourier)</h2>
-  <p class="fragment">A demonstração acima nos dá um método para deduzir os coeficientes \(a_n\)<span style="text-indent: 2em;">&nbsp;e \(b_n\)&nbsp;da Série de Fourier. Suponha que </span>\(f(x)\)<span style="text-indent: 2em;"> tenha a série de Fourier da seção 2. Para obter o&nbsp;</span>\(b_m\)<span style="text-indent: 2em;">, multiplicamos os dois lados por </span>\(\red{\sen(m\pi x/L)}\)<span style="text-indent: 2em;"> e integramos de </span>\(-L\)<span style="text-indent: 2em;"> a </span>\(L\)<span style="text-indent: 2em;">:</span></p>
+  <p class="fragment">A demonstração acima nos dá um método para deduzir os coeficientes \(a_n\)&nbsp;e \(b_n\)&nbsp;da Série de Fourier. Suponha que \(f(x)\) tenha a série de Fourier da seção 2. Para obter o&nbsp;\(b_m\), multiplicamos os dois lados por \(\red{\sen(m\pi x/L)}\) e integramos de \(-L\) a \(L\):</p>
   <div class="eq fragment">\[ \red{\int_{-L}^{L}} f(x)\red{\sen\tfrac{m\pi x}{L}\,dx} = \red{\int_{-L}^{L}}\frac{a_0}{2} + \sum_{n=1}^{\infty}\left[ a_n\cos\frac{n\pi x}{L} + b_n\sen\frac{n\pi x}{L} \right]\red{\sen\tfrac{m\pi x}{L}\,dx}. \]</div>
-  <div class="eq fragment"><span style="text-indent: 2em; color: rgb(51, 51, 204);">Do que vimos na seção anterior, do lado direito, apenas não dá zero as integrais com </span>\(b_n\)<span style="text-indent: 2em; color: rgb(51, 51, 204);"> onde&nbsp;</span>\(n = m\)<span style="text-indent: 2em; color: rgb(51, 51, 204);">. Logo,</span><br></div>
-  <div class="eq fragment"><span style="text-indent: 2em; color: rgb(51, 51, 204);">\[ \red{\int_{-L}^{L}} f(x)\red{\sen\tfrac{m\pi x}{L}\,dx} =  b_n\int_{-L}^{L}\sin^2\frac{n\pi x}{L}\,dx = b_n\int_{-L}^{L}\frac12\,dx = b_n\frac{2L}{2} \]<br></span></div>
-  <div class="eq fragment"><span style="text-indent: 2em; color: rgb(51, 51, 204);">Que, aplicada a fórmula de arco dobro, a parte do cosseno&nbsp;</span><font color="#3333cc">também dá zero. Assim,</font></div>
+  <div class="eq fragment">Do que vimos na seção anterior, do lado direito, apenas não dá zero as integrais com \(b_n\) onde&nbsp;\(n = m\). Logo,<br></div>
+  <div class="eq fragment">\[ \red{\int_{-L}^{L}} f(x)\red{\sen\tfrac{m\pi x}{L}\,dx} =  b_n\int_{-L}^{L}\sin^2\frac{n\pi x}{L}\,dx = b_n\int_{-L}^{L}\frac12\,dx = b_n\frac{2L}{2} \]<br></div>
+  <div class="eq fragment">Que, aplicada a fórmula de arco dobro, a parte do cosseno&nbsp;também dá zero. Assim,</div>
   <div class="eq fragment">\[ \int_{-L}^{L} f(x)\sen\frac{m\pi x}{L}\,dx = b_m\,L. \]</div>
   <p class="fragment">Fazendo o mesmo com \(\cos(m\pi x/L)\) obtemos \(a_m\). Trocando \(m\) por \(n\):</p>
   <div class="eq fragment caixa">\[ a_n = \frac1L\int_{-L}^{L} f(x)\cos\frac{n\pi x}{L}\,dx, \quad n = 0, 1, 2, \ldots \]
@@ -268,7 +268,7 @@
       <li>\(\dfrac{f(x^+) + f(x^-)}{2}\), a média dos limites laterais, se \(f(x)\) tem um salto em \(x\).</li>
     </ul>
   </div>
-  <p class="fragment">Ou seja, nos pontos de salto a série "escolhe" o ponto médio do salto, não importa qual valor&nbsp;\(f(x)\)&nbsp;tem ali.</p>
+  <p class="fragment">Ou seja, nos pontos de salto, a série "escolhe" o ponto médio do salto, não importa qual valor&nbsp;\(f(x)\)&nbsp;tem ali.</p>
   <p class="fragment">Há um detalhe importante perto dos saltos. Ao somarmos apenas os \(N\) primeiros termos (a <span class="rotulo">soma parcial</span> \(S_N\)), a curva oscila e <span class="rotulo">ultrapassa</span> o valor da função perto do salto. Aumentando \(N\), a oscilação fica mais estreita, mas a ultrapassagem não diminui: ela tende a cerca de <span class="rotulo">9% do tamanho do salto</span>. Esse é o <span class="rotulo">fenômeno de Gibbs</span>, e você o verá no gráfico do Exemplo 1.</p>
   <h2 class="fragment">6. Funções pares e ímpares</h2>
   <p class="fragment">Muitas vezes, metade dos coeficientes é zero, e podemos saber disso antes de fazer qualquer conta. Lembremos que \(f\) é <span class="rotulo">par</span> se \(f(-x) = f(x)\) (gráfico simétrico em relação ao eixo \(y\), como \(\cos x\) e \(x^2\)) e <span class="rotulo">ímpar</span> se \(f(-x) = -f(x)\) (simétrico em relação à origem, como \(\sen x\) e \(x^3\)). Duas propriedades decorrem diretamente disso:</p>
@@ -304,7 +304,7 @@
   <!-- Para mudar as curvas, edite data-termos (valores de N) e data-cores. Cada curva é uma camada. -->
   <svg class="grafico" viewBox="0 0 1000 400" data-fourier-quadrada="" data-termos="1,3,9,41" data-cores="#3333cc,#ff8000,#2a9d3a,#dd1111"></svg>
   <p class="fragment">Por fim, observe que os coeficientes decaem como \(1/n\). Isso é típico de funções com saltos: a série precisa de muitos harmônicos altos para "construir" uma descontinuidade. Funções mais suaves têm coeficientes que decaem mais depressa, como veremos no próximo exemplo.</p>
-  <h3 class="fragment"><span class="rotulo">Simetria de meia onda.</span></h3>
+  <h3 class="fragment"><span class="rotulo">Simetria de meia-onda.</span></h3>
   <p class="fragment">No Exemplo 1, só apareceram harmônicos ímpares. Isso se deve a uma terceira simetria, menos conhecida e muito útil. Dizemos que \(f(x)\) tem <span class="rotulo">simetria de meia onda</span> se</p>
   <div class="eq fragment">\[ f(x + L) = -f(x), \]</div>
   <p class="fragment sem-recuo">isto é, a segunda metade do período é a primeira "de cabeça para baixo". No gráfico abaixo, a curva tracejada é a primeira metade apenas deslocada de \(L\); a segunda metade de \(f(x)\) é essa cópia refletida no eixo \(x\).</p>
@@ -401,12 +401,12 @@
   <div class="caixa fragment">
     <p class="sem-recuo">Há ressonância se <span class="rotulo">algum</span> harmônico presente na série de \(f\) tiver frequência igual a \(\omega\), isto é, se \(n\pi/L = \omega\) para algum \(n\) com coeficiente não nulo.&nbsp;</p>
   </div>
-  <p class="fragment">Uma força externa de frequência fundamental bem diferente de \(\omega\) pode, portanto, provocar ressonância através de um de seus harmônicos. E, ao contrário, a ausência de certos harmônicos (por exemplo, por simetria de meia onda) pode impedir uma ressonância que parecia inevitável. O exemplo a seguir mostra os dois casos.</p>
+  <p class="fragment">Uma força externa de frequência fundamental bem diferente de \(\omega\) pode, portanto, provocar ressonância por meio de um de seus harmônicos. E, ao contrário, a ausência de certos harmônicos (por exemplo, por simetria de meia onda) pode impedir uma ressonância que parecia inevitável. O exemplo a seguir mostra os dois casos.</p>
   <h3 class="fragment"><span class="rotulo">Exemplo 3:</span> ressonância num harmônico.</h3>
   <p class="fragment">Seja \(f\) a onda quadrada do Exemplo 1, com período \(2L = 3\pi\). Encontre uma solução particular de</p>
   <div class="eq fragment">\[ y'' + 4y = f(t). \]</div>
   <p class="fragment">Aqui \(\omega = 2\) e \(L = 3\pi/2\), de modo que as frequências da série são \(\red{c_n} = n\pi/L = 2n/3\), para \(n\) ímpar (simetria de meia onda). A fundamental é \(\red{c_1} = 2/3\), bem abaixo de \(\omega = 2\). Mas, para \(n = 3\), \(\red{c_3} = 2 = \omega\): o terceiro harmônico está em ressonância.</p>
-  <p class="fragment">Para \(n \ne 3\), estamos no caso \(\red c \ne \omega\), com \(b_n = 4/n\pi\)&nbsp;(onda quadrada), logo&nbsp;</p>
+  <p class="fragment">Para \(n \ne 3\), estamos no caso \(\red c \ne \omega\), com \(b_n = 4/(n\pi)\)&nbsp;para a onda quadrada. Logo&nbsp;</p>
   <div class="eq fragment">\[ y_p = \frac{b}{\omega^2 - \red c^2}\sen\red c t \Imp y_n = \frac{4}{n\pi}\cdot\frac{1}{4 - 4n^2/9}\sen\frac{2nt}{3} \]</div>
   <div class="eq fragment">\[ y_n  = \frac{9}{n\pi(9 - n^2)}\sen\frac{2nt}{3}. \]</div>
   <p class="fragment">Para \(n = 3\), temos o caso ressonante com \(b = 4/(3\pi)\):</p>
@@ -418,7 +418,7 @@
 <section class="pagina">
   <p class="fragment">Logo,</p>
   <div class="eq fragment caixa">\[ y_p(t) = -\frac{t}{3\pi}\cos 2t + \sum_{\substack{n\mt{ ímpar}\\ n\ne 3}}\frac{9}{n\pi(9 - n^2)}\sen\frac{2nt}{3}. \]</div>
-  <p class="fragment"><span style="text-indent: 2em;">E se o período fosse </span>\(2\pi\)<span style="text-indent: 2em;">? Então </span>\(L = \pi\)<span style="text-indent: 2em;"> e </span>\(\red{c_n} = n\pi/L = n\)<span style="text-indent: 2em;">. Seria natural pensar que o segundo harmônico (</span>\(\red{c_2} = 2\)<span style="text-indent: 2em;">) entra em ressonância. Mas a onda quadrada </span><span class="rotulo" style="text-indent: 2em;">não tem harmônicos pares</span><span style="text-indent: 2em;">, por causa da simetria de meia onda. Assim, nenhum harmônico tem frequência </span>\(2\)<span style="text-indent: 2em;">, e </span><span class="rotulo" style="text-indent: 2em;">não há ressonância</span><span style="text-indent: 2em;">. Em geral, para a onda quadrada e </span>\(\omega = 2\)<span style="text-indent: 2em;">, há ressonância exatamente quando </span>\(2L = n\pi\)<span style="text-indent: 2em;"> para algum </span>\(n\)<span style="text-indent: 2em;"> ímpar.</span></p>
+  <p class="fragment">E se o período fosse \(2\pi\)? Então \(L = \pi\) e \(\red{c_n} = n\pi/L = n\). Seria natural pensar que o segundo harmônico (\(\red{c_2} = 2\)) entra em ressonância. Mas a onda quadrada <span class="rotulo" style="text-indent: 2em;">não tem harmônicos pares</span>, por causa da simetria de meia onda. Assim, nenhum harmônico tem frequência \(2\), e <span class="rotulo" style="text-indent: 2em;">não há ressonância</span>. Em geral, para a onda quadrada e \(\omega = 2\), há ressonância exatamente quando \(2L = n\pi\) para algum \(n\) ímpar.</p>
   <h2>10. Um atalho: a exponencial complexa</h2>
   <p class="fragment">Nas seções 8 e 9, refizemos o método dos coeficientes a determinar para cada equação. Há um caminho mais curto, que será muito usado nas disciplinas seguintes, usando a fórmula de Euler, \(e^{i\red c t} = \cos\red c t + i\sen\red c t\). Se acharmos a resposta à entrada complexa \(e^{i\red c t}\), a resposta a \(\sen\red c t\) será sua parte imaginária.</p>
   <p class="fragment">Tentando \(y_p = H\,e^{i\red c t}\), cada derivada apenas multiplica por \(i\red c\). Então:</p>
@@ -435,7 +435,7 @@
   <div class="caixa fragment">
     <ul>
       <li>Uma função periódica de período \(2L\) se escreve como soma de harmônicos de frequências \(n\pi/L\) (seção 2).</li>
-      <li>Senos e cossenos são ortogonais; por isso cada coeficiente é uma integral, uma "projeção" (seções 3 e 4).</li>
+      <li>Senos e cossenos são ortogonais; por isso, cada coeficiente é uma integral, uma "projeção" (seções 3 e 4).</li>
       <li>A série converge para \(f\) nos pontos de continuidade e para a média nos saltos; perto dos saltos ocorre o fenômeno de Gibbs (seção 5).</li>
       <li>Função par: só cossenos. Ímpar: só senos. Meia onda: só harmônicos ímpares (seção 6).</li>
       <li>Saltos dão coeficientes \(\sim 1/n\); funções contínuas com "bicos", \(\sim 1/n^2\) (Exemplos 1 e 2).</li>
@@ -448,7 +448,7 @@
 
 </main>
 <div id="editor-eq" hidden="">
-  <div>Fórmula em LaTeX <span style="color:#888">(Ctrl+Enter aplica, Esc cancela)</span></div>
+  <div>Fórmula em LaTeX <span style="color: rgb(136, 136, 136);">(Ctrl+Enter aplica, Esc cancela)</span></div>
   <textarea id="ee-tex" rows="3" spellcheck="false" style="width: 750px; height: 165px;"></textarea>
   <div id="ee-previa"></div>
   <label><input type="checkbox" id="ee-display"> destacada (linha própria, centralizada)</label>
@@ -707,24 +707,63 @@
     doc.querySelector('#aviso').textContent = '';
     doc.querySelector('#contador').textContent = '';
     const m = doc.querySelector('#modo'); m.textContent = 'Modo aula'; m.setAttribute('href', '#');
+    limparExtensoes(doc);
     // dentro das fórmulas, mantém "&" legível no código (ex.: \begin{cases} a & b)
     const html = doc.outerHTML.replace(/\\[\[(][\s\S]*?\\[\])]/g, m => m.replace(/&amp;/g, '&'));
-    return '<!doctype html>\n' + html.replace('<html lang="pt-BR" data-theme="light"><head>', '<html lang="pt-BR" data-theme="light">\n<head>') + '\n';
+    return '<!doctype html>\n' + html.replace(/^(<html[^>]*>)<head>/, '$1\n<head>') + '\n';
+  }
+  // Remove o que extensões do navegador (Dark Reader, corretores, etc.) injetam na página
+  // e os <span>/<font> de cor e recuo que o Chrome cria sozinho durante a edição.
+  function limparExtensoes(doc) {
+    doc.querySelectorAll('style.darkreader, meta[name="darkreader"]').forEach(e => e.remove());
+    doc.querySelectorAll('*').forEach(e => { if (e.tagName.includes('-') && !e.tagName.startsWith('MJX')) e.remove(); });
+    [doc, ...doc.querySelectorAll('*')].forEach(e => {
+      [...e.attributes].forEach(a => { if (/^data-(darkreader|qb|gramm|lt-|gr-)/.test(a.name)) e.removeAttribute(a.name); });
+      if (e.style) {
+        [...e.style].filter(p => p.startsWith('--darkreader')).forEach(p => e.style.removeProperty(p));
+        if (!e.getAttribute('style') || !e.getAttribute('style').trim()) e.removeAttribute('style');
+      }
+    });
+    doc.querySelectorAll('section.pagina[spellcheck]').forEach(e => e.removeAttribute('spellcheck'));
+    const azul = c => /^(rgb\(51, 51, 204\)|#3333cc)$/i.test(c || '');
+    const desembrulhar = e => { e.replaceWith(...e.childNodes); };
+    doc.querySelectorAll('section.pagina span:not([class])').forEach(s => {
+      const props = [...s.style];
+      if (!props.length || !props.every(p => p === 'text-indent' || (p === 'color' && azul(s.style.color)))) return;
+      if (s.style.color && s.parentElement.closest('aside, .rotulo, [style*="color"], font')) return;
+      if (s.attributes.length === 1) desembrulhar(s);
+    });
+    doc.querySelectorAll('section.pagina font').forEach(f => {
+      if (f.attributes.length === 1 && azul(f.getAttribute('color')) && !f.parentElement.closest('aside, .rotulo')) desembrulhar(f);
+    });
+  }
+  window.limparExtensoes = limparExtensoes;
+  function baixar(html, nome) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    a.download = nome; document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
   }
   async function salvar() {
     const html = gerarHTML();
     const nome = decodeURIComponent(location.pathname.split('/').pop() || '') || 'apostila.html';
+    // Dentro de um iframe (por exemplo, no Moodle) o Chrome não deixa abrir o diálogo
+    // "Salvar como"; nesse caso o arquivo vai direto para a pasta de downloads.
+    const emIframe = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
     try {
-      if (window.showSaveFilePicker) {
+      if (window.showSaveFilePicker && !emIframe) {
         if (!ED.handle) ED.handle = await showSaveFilePicker({ suggestedName: nome, types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }] });
         const w = await ED.handle.createWritable(); await w.write(html); await w.close();
+        ED.sujo = false; avisar('Salvo ✓');
       } else {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-        a.download = nome; document.body.append(a); a.click(); a.remove();
+        baixar(html, nome);
+        ED.sujo = false; avisar('Baixado ✓');
       }
-      ED.sujo = false; avisar('Salvo ✓');
-    } catch (e) { if (e.name !== 'AbortError') avisar('Erro ao salvar'); }
+    } catch (e) {
+      if (e.name === 'AbortError') return;
+      try { baixar(html, nome); ED.sujo = false; avisar('Baixado ✓'); }
+      catch (e2) { avisar('Erro ao salvar'); }
+    }
   }
   $('b-salvar').onclick = salvar;
   $('b-sair').onclick = sairEdicao;
@@ -737,6 +776,8 @@
 
   MathJax.startup.promise.then(() => MathJax.typesetPromise()).then(guardarTex);
 </script>
+
+
 
 
 
