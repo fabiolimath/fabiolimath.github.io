@@ -463,26 +463,32 @@
 <!-- =============================== PÁGINA 13 =============================== -->
 <section class="pagina">
   <h2 class="fragment">11. Identidade de Parseval e erro quadrático médio</h2>
-  <p class="fragment">Na prática, não somamos infinitos termos: truncamos a série numa soma parcial. Precisamos então de uma medida do erro cometido, e de um modo de decidir quantos termos usar. A ferramenta para isso é mais uma consequência da ortogonalidade.</p>
-  <p class="fragment">Multiplicando a série de Fourier por \(f(x)\) e integrando de \(-L\) a \(L\), cada termo do lado direito vira uma das integrais das fórmulas de Euler–Fourier:</p>
+  <p class="fragment">Na prática, não somamos infinitos termos: truncamos a série numa soma parcial. Precisamos então de uma medida do erro cometido, e de um modo de decidir quantos termos usar. Começamos por uma definição.</p>
+  <p class="fragment">A <span class="rotulo">média</span> de uma função \(g(x)\) num período \([-L, L]\) é</p>
+  <div class="eq fragment">\[ \overline{g} = \frac{1}{2L}\int_{-L}^{L} g(x)\,dx. \]</div>
+  <p class="fragment sem-recuo">Por exemplo, vimos na seção 4 que \(a_0/2 = \overline{f}\). A média de \([f(x)]^2\), \(\overline{f^2}\), é chamada de <span class="rotulo">média quadrática</span> de \(f\).</p>
+  <p class="fragment">A série de Fourier relaciona \(\overline{f^2}\) com os coeficientes. Multiplicando a série por \(f(x)\) e integrando de \(-L\) a \(L\), cada termo do lado direito vira uma das integrais das fórmulas de Euler–Fourier:</p>
   <div class="eq fragment">\[ \begin{aligned} \int_{-L}^{L} [f(x)]^2\,dx &= \frac{a_0}{2}\int_{-L}^{L} f(x)\,dx + \sum_{n=1}^{\infty}\Big[ a_n\int_{-L}^{L} f(x)\cos\frac{n\pi x}{L}\,dx \\ &\hphantom{= \frac{a_0}{2}\int_{-L}^{L} f(x)\,dx + \sum_{n=1}^{\infty}\Big[} + b_n\int_{-L}^{L} f(x)\sen\frac{n\pi x}{L}\,dx \Big] \end{aligned} \]</div>
   <div class="eq fragment">\[ = \frac{a_0}{2}\,L a_0 + \sum_{n=1}^{\infty}\big[ a_n\,L a_n + b_n\,L b_n \big]. \]</div>
-  <aside class="nota fragment">*: É o análogo do teorema de Pitágoras: \(|\vec v|^2 = v_x^2 + v_y^2 + v_z^2\) numa base ortogonal.</aside>
-  <p class="fragment sem-recuo">Dividindo por \(L\), obtemos a</p>
-  <div class="eq fragment caixa"><span class="rotulo">Identidade de Parseval:</span>\[ \frac1L\int_{-L}^{L} [f(x)]^2\,dx = \frac{a_0^2}{2} + \sum_{n=1}^{\infty}\big(a_n^2 + b_n^2\big). \]</div>
-  <p class="fragment">Agora, seja \(S_N\) a <span class="rotulo">soma parcial</span> com os harmônicos até a ordem \(N\),</p>
-  <div class="eq fragment">\[ S_N(x) = \frac{a_0}{2} + \sum_{n=1}^{N}\left[ a_n\cos\frac{n\pi x}{L} + b_n\sen\frac{n\pi x}{L} \right]. \]</div>
-  <p class="fragment sem-recuo">Medimos a qualidade da aproximação pelo <span class="rotulo">erro quadrático médio</span>, a média de \([f(x) - S_N(x)]^2\) num período:</p>
-  <div class="eq fragment">\[ E_N = \frac{1}{2L}\int_{-L}^{L} \big[f(x) - S_N(x)\big]^2\,dx. \]</div>
+  <p class="fragment sem-recuo">Dividindo por \(2L\), obtemos a</p>
+  <div class="eq fragment caixa"><span class="rotulo">Identidade de Parseval:</span>\[ \overline{f^2} = \frac{1}{2L}\int_{-L}^{L} [f(x)]^2\,dx = \frac{a_0^2}{4} + \frac12\sum_{n=1}^{\infty}\big(a_n^2 + b_n^2\big). \]</div>
+  <p class="fragment">Agora, o erro. Seja \(S_N\) a <span class="rotulo">soma parcial</span> com os harmônicos até a ordem \(N\), e \(R_N\) o <span class="rotulo">resto</span>, o que sobra da série ao truncá-la em \(N\):</p>
+  <div class="eq fragment">\[ S_N(x) = \frac{a_0}{2} + \sum_{n=1}^{N}\left[ a_n\cos\frac{n\pi x}{L} + b_n\sen\frac{n\pi x}{L} \right], \]
+  \[ R_N(x) = f(x) - S_N(x) = \sum_{n=N+1}^{\infty}\left[ a_n\cos\frac{n\pi x}{L} + b_n\sen\frac{n\pi x}{L} \right]. \]</div>
   <div class="rodape">13</div>
 </section>
 
 <!-- =============================== PÁGINA 14 =============================== -->
 <section class="pagina">
-  <p class="fragment">A diferença \(f - S_N\) é a própria série de Fourier de \(f\), só com os harmônicos \(n &gt; N\). Aplicando a ela a identidade de Parseval,</p>
-  <div class="eq fragment">\[ E_N = \frac12\sum_{n=N+1}^{\infty}\big(a_n^2 + b_n^2\big). \]</div>
-  <p class="fragment sem-recuo">Essa é uma soma infinita, mas, subtraindo do total dado pela identidade de Parseval os termos até \(N\), ela vira uma soma finita:</p>
-  <div class="eq fragment caixa">\[ E_N = \frac{1}{2L}\int_{-L}^{L} [f(x)]^2\,dx - \left[\frac{a_0^2}{4} + \frac12\sum_{n=1}^{N}\big(a_n^2 + b_n^2\big)\right]. \]</div>
+  <p class="fragment">\(S_N\) e \(R_N\) também são séries de Fourier: a de \(S_N\) tem só os coeficientes até \(N\), e a de \(R_N\), só os demais. Aplicando a identidade de Parseval a cada uma,</p>
+  <div class="eq fragment">\[ \overline{S_N^2} = \frac{a_0^2}{4} + \frac12\sum_{n=1}^{N}\big(a_n^2 + b_n^2\big), \qquad \overline{R_N^2} = \frac12\sum_{n=N+1}^{\infty}\big(a_n^2 + b_n^2\big). \]</div>
+  <aside class="nota fragment">*: É o análogo do teorema de Pitágoras: \(S_N\) e \(R_N\) são ortogonais, e \(f = S_N + R_N\).</aside>
+  <p class="fragment sem-recuo">Somando as duas e comparando com a identidade de Parseval para \(f\),</p>
+  <div class="eq fragment">\[ \overline{f^2} = \overline{S_N^2} + \overline{R_N^2}. \]</div>
+  <p class="fragment">Medimos a qualidade da aproximação pelo <span class="rotulo">erro quadrático médio</span>, a média quadrática do resto:</p>
+  <div class="eq fragment">\[ E_N = \overline{R_N^2} = \frac{1}{2L}\int_{-L}^{L} \big[f(x) - S_N(x)\big]^2\,dx = \frac12\sum_{n=N+1}^{\infty}\big(a_n^2 + b_n^2\big). \]</div>
+  <p class="fragment sem-recuo">Essa é uma soma infinita, mas, pela relação acima, \(E_N = \overline{f^2} - \overline{S_N^2}\), que é uma soma finita:</p>
+  <div class="eq fragment caixa">\[ E_N = \overline{f^2} - \left[\frac{a_0^2}{4} + \frac12\sum_{n=1}^{N}\big(a_n^2 + b_n^2\big)\right]. \]</div>
   <p class="fragment">Basta calcular uma integral, a de \(f^2\), e os \(N\) primeiros coeficientes. Como \(E_N\) diminui quando \(N\) aumenta, aumentamos \(N\) até que \(E_N\) fique abaixo da tolerância desejada.</p>
   <div class="rodape">14</div>
 </section>
@@ -491,8 +497,8 @@
 <section class="pagina">
   <h3 class="fragment"><span class="rotulo">Exemplo 3 (continuação):</span> quantos termos usar?</h3>
   <p class="fragment">No Exemplo 3, a força externa \(f(t)\) é a onda quadrada de período \(2L = 3\pi\). Quantos termos de sua série de Fourier são necessários para que o erro quadrático médio fique menor que \(10^{-2}\)? E na solução particular \(y_p\)?</p>
-  <p class="fragment">Como \([f(t)]^2 = 1\), a integral é imediata:</p>
-  <div class="eq fragment">\[ \frac{1}{2L}\int_{-L}^{L} [f(t)]^2\,dt = \frac{1}{2L}\cdot 2L = 1. \]</div>
+  <p class="fragment">Como \([f(t)]^2 = 1\), a média quadrática é imediata:</p>
+  <div class="eq fragment">\[ \overline{f^2} = \frac{1}{2L}\int_{-L}^{L} [f(t)]^2\,dt = \frac{1}{2L}\cdot 2L = 1. \]</div>
   <p class="fragment sem-recuo">Como \(a_n = 0\) e \(b_n = 4/(n\pi)\) só para \(n\) ímpar, a fórmula do erro fica</p>
   <div class="eq fragment">\[ E_N = 1 - \frac12\sum_{n \mt{ ímpar}\le N}\frac{16}{n^2\pi^2} = 1 - \frac{8}{\pi^2}\left[1 + \frac19 + \frac1{25} + \cdots + \frac1{N^2}\right]. \]</div>
   <p class="fragment sem-recuo">Calculando com uma planilha ou um pequeno programa:</p>
