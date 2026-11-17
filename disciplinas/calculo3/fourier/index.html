@@ -490,29 +490,29 @@
 <!-- =============================== PÁGINA 15 =============================== -->
 <section class="pagina">
   <h3 class="fragment"><span class="rotulo">Exemplo 3 (continuação):</span> quantos termos usar?</h3>
-  <p class="fragment">No Exemplo 3, a força externa \(f(t)\) é a onda quadrada de período \(2L = 3\pi\). Quantos termos de sua série de Fourier são necessários para que o erro quadrático médio fique menor que \(10^{-3}\)? E na solução particular \(y_p\)?</p>
+  <p class="fragment">No Exemplo 3, a força externa \(f(t)\) é a onda quadrada de período \(2L = 3\pi\). Quantos termos de sua série de Fourier são necessários para que o erro quadrático médio fique menor que \(10^{-2}\)? E na solução particular \(y_p\)?</p>
   <p class="fragment">Como \([f(t)]^2 = 1\), a integral é imediata:</p>
   <div class="eq fragment">\[ \frac{1}{2L}\int_{-L}^{L} [f(t)]^2\,dt = \frac{1}{2L}\cdot 2L = 1. \]</div>
   <p class="fragment sem-recuo">Como \(a_n = 0\) e \(b_n = 4/(n\pi)\) só para \(n\) ímpar, a fórmula do erro fica</p>
   <div class="eq fragment">\[ E_N = 1 - \frac12\sum_{n \mt{ ímpar}\le N}\frac{16}{n^2\pi^2} = 1 - \frac{8}{\pi^2}\left[1 + \frac19 + \frac1{25} + \cdots + \frac1{N^2}\right]. \]</div>
   <p class="fragment sem-recuo">Calculando com uma planilha ou um pequeno programa:</p>
   <table class="tabela fragment">
-    <tbody><tr><th>\(N\)</th><td>1</td><td>3</td><td>9</td><td>41</td><td>99</td><td>199</td><td>403</td><td>405</td></tr>
-    <tr><th>\(E_N\)</th><td>0,189</td><td>0,0994</td><td>0,0404</td><td>0,00965</td><td>0,00405</td><td>0,00203</td><td>\(1{,}003\cdot10^{-3}\)</td><td>\(\red{9{,}98\cdot10^{-4}}\)</td></tr>
+    <tbody><tr><th>\(N\)</th><td>1</td><td>3</td><td>9</td><td>31</td><td>37</td><td>39</td><td>41</td></tr>
+    <tr><th>\(E_N\)</th><td>0,189</td><td>0,0994</td><td>0,0404</td><td>0,0127</td><td>0,0107</td><td>0,0101</td><td>\(\red{0{,}00965}\)</td></tr>
   </tbody></table>
   <aside class="nota fragment">*: \(E_N \to 0\) mesmo com o fenômeno de Gibbs: os "chifres" não diminuem, mas ficam cada vez mais estreitos.</aside>
-  <p class="fragment">O erro fica abaixo de \(10^{-3}\) pela primeira vez em \(N = 405\). Como só os harmônicos ímpares são não nulos, são necessários \((405 + 1)/2 = \red{203}\) <span class="rotulo">termos</span>.</p>
+  <p class="fragment">O erro fica abaixo de \(10^{-2}\) pela primeira vez em \(N = 41\). Como só os harmônicos ímpares são não nulos, são necessários \((41 + 1)/2 = \red{21}\) <span class="rotulo">termos</span>.</p>
   <aside class="nota fragment">*: Para \(n\) ímpar, \(\dfrac1{n^2} &lt; \dfrac12\displaystyle\int_{n-2}^{n}\frac{dx}{x^2}\), pois \(1/x^2\) é decrescente.</aside>
   <p class="fragment">Para saber onde procurar sem testar todos os valores, estimamos a soma infinita de \(E_N\) por uma integral:</p>
   <div class="eq fragment">\[ E_N = \frac{8}{\pi^2}\sum_{n\mt{ ímpar} &gt; N}\frac{1}{n^2} &lt; \frac{8}{\pi^2}\cdot\frac12\int_N^{\infty}\frac{dx}{x^2} = \frac{4}{\pi^2 N}. \]</div>
-  <p class="fragment sem-recuo">Logo, \(E_N &lt; 10^{-3}\) se \(N &gt; 4000/\pi^2 \approx 405{,}3\). A estimativa garante \(N = 407\), bem perto do valor exato.</p>
+  <p class="fragment sem-recuo">Logo, \(E_N &lt; 10^{-2}\) se \(N &gt; 400/\pi^2 \approx 40{,}5\). A estimativa garante \(N = 41\), exatamente o valor encontrado na tabela.</p>
   <div class="rodape">15</div>
 </section>
 
 <!-- =============================== PÁGINA 16 =============================== -->
 <section class="pagina">
   <p class="fragment">Na solução particular, o termo ressonante \(-\frac{t}{3\pi}\cos 2t\) não é periódico e entra sempre inteiro. Truncamos apenas a parte periódica, a soma dos \(y_n\), cujos coeficientes são \(B_n = \dfrac{9}{n\pi(9 - n^2)}\), \(n\) ímpar, \(n \ne 3\). Eles decaem como \(1/n^3\), e a soma infinita converge muito depressa:</p>
-  <div class="eq fragment">\[ \begin{aligned} E_1 &= \frac12\big(B_5^2 + B_7^2 + B_9^2 + \cdots\big) \\ &\approx \frac12\big(1{,}282 + 0{,}105 + 0{,}020 + \cdots\big)\cdot 10^{-3} \approx \red{7{,}1\cdot 10^{-4}}. \end{aligned} \]</div>
+  <div class="eq fragment">\[ \begin{aligned} E_1 &= \frac12\big(B_5^2 + B_7^2 + B_9^2 + \cdots\big) \\ &\approx \frac12\big(1{,}282 + 0{,}105 + 0{,}020 + \cdots\big)\cdot 10^{-3} \approx \red{7{,}1\cdot 10^{-4}} &lt; 10^{-2}. \end{aligned} \]</div>
   <p class="fragment sem-recuo">Ou seja, para a solução bastam o termo ressonante e o harmônico \(n = 1\):</p>
   <div class="eq fragment caixa">\[ y_p(t) \approx -\frac{t}{3\pi}\cos 2t + \frac{9}{8\pi}\sen\frac{2t}{3}. \]</div>
   <p class="fragment">A EDO "suaviza" a força externa: o fator \(1/(\omega^2 - c_n^2)\) divide os coeficientes por \(n^2\), e a série da solução precisa de muito menos termos que a de \(f\).</p>
