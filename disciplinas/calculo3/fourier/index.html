@@ -467,9 +467,10 @@
   <p class="fragment">A <span class="rotulo">média</span> de uma função \(g(x)\) num período \([-L, L]\) é</p>
   <div class="eq fragment">\[ \overline{g} = \frac{1}{2L}\int_{-L}^{L} g(x)\,dx. \]</div>
   <p class="fragment sem-recuo">Por exemplo, vimos na seção 4 que \(a_0/2 = \overline{f}\). A média de \([f(x)]^2\), \(\overline{f^2}\), é chamada de <span class="rotulo">média quadrática</span> de \(f\).</p>
-  <p class="fragment">A série de Fourier relaciona \(\overline{f^2}\) com os coeficientes. Multiplicando a série por \(f(x)\) e integrando de \(-L\) a \(L\), cada termo do lado direito vira uma das integrais das fórmulas de Euler–Fourier:</p>
+  <p class="fragment">A série de Fourier relaciona \(\overline{f^2}\) com os coeficientes. Multiplicando a série por \(f(x)\) e integrando de \(-L\) a \(L\),</p>
   <div class="eq fragment">\[ \begin{aligned} \int_{-L}^{L} [f(x)]^2\,dx &= \frac{a_0}{2}\int_{-L}^{L} f(x)\,dx + \sum_{n=1}^{\infty}\Big[ a_n\int_{-L}^{L} f(x)\cos\frac{n\pi x}{L}\,dx \\ &\hphantom{= \frac{a_0}{2}\int_{-L}^{L} f(x)\,dx + \sum_{n=1}^{\infty}\Big[} + b_n\int_{-L}^{L} f(x)\sen\frac{n\pi x}{L}\,dx \Big] \end{aligned} \]</div>
-  <div class="eq fragment">\[ = \frac{a_0}{2}\,L a_0 + \sum_{n=1}^{\infty}\big[ a_n\,L a_n + b_n\,L b_n \big]. \]</div>
+  <aside class="nota fragment">*: Cada termo do lado direito vira uma das integrais das fórmulas de Euler–Fourier.</aside>
+  <div class="eq fragment" style="clear: none">\[ = \frac{a_0}{2}\,L a_0 + \sum_{n=1}^{\infty}\big[ a_n\,L a_n + b_n\,L b_n \big]. \]</div>
   <p class="fragment sem-recuo">Dividindo por \(2L\), obtemos a</p>
   <div class="eq fragment caixa"><span class="rotulo">Identidade de Parseval:</span>\[ \overline{f^2} = \frac{1}{2L}\int_{-L}^{L} [f(x)]^2\,dx = \frac{a_0^2}{4} + \frac12\sum_{n=1}^{\infty}\big(a_n^2 + b_n^2\big). \]</div>
   <p class="fragment">Agora, o erro. Seja \(S_N\) a <span class="rotulo">soma parcial</span> com os harmônicos até a ordem \(N\), e \(R_N\) o <span class="rotulo">resto</span>, o que sobra da série ao truncá-la em \(N\):</p>
