@@ -29,6 +29,9 @@
       colocada logo ANTES do parágrafo/equação a que se refere.
     * Caixa de destaque: class="caixa". Rótulo laranja: <span class="rotulo">.
     * Exemplo: <h3><span class="rotulo">Exemplo 1:</span> ...</h3>
+    * Sumário: botão "☰ Sumário" (canto superior esquerdo), nos três modos.
+      É montado sozinho a partir dos títulos <h1>, <h2> e dos <h3> que começam
+      com "Exemplo"; basta escrever os títulos normalmente.
   EDIÇÃO VISUAL (sem precisar mexer no código):
     * Abra o arquivo no navegador (dois cliques) e clique em "Editar".
     * Clique no texto e digite, como num editor comum.
@@ -99,6 +102,9 @@
   .apostila .grafico .eixo { stroke: #888; stroke-width: 1.5; }
   .apostila .grafico .alvo { stroke: var(--tinta); stroke-width: 2.5; fill: none; }
   .apostila .grafico .soma { fill: none; stroke-width: 2.2; }
+  .apostila table.tabela { border-collapse: collapse; margin: .3em auto .8em; color: var(--tinta); font-size: .85em; }
+  .apostila table.tabela th, .apostila table.tabela td { border: 1px solid #bbb; padding: .2em .55em; text-align: center; font-weight: normal; }
+  .apostila table.tabela th { color: var(--laranja); }
   .apostila .rodape { position: absolute; bottom: 22px; left: 0; right: 0; text-align: center; font-size: .7em; color: #999; }
 
   /* modo aula: camadas */
@@ -131,6 +137,29 @@
   }
   #modo:hover { background: #f3f3f3; }
   @media print { #modo { display: none; } }
+
+  /* ---------- sumário (painel lateral) ---------- */
+  #b-sumario { position: fixed; top: 10px; left: 12px; z-index: 66;
+    font: 14px system-ui, sans-serif; background: #fff; color: #333;
+    border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+  #b-sumario:hover { background: #f3f3f3; }
+  #sumario { position: fixed; top: 0; bottom: 0; left: 0; z-index: 55; box-sizing: border-box;
+    width: min(290px, 85vw); padding: 52px 10px 20px 14px; overflow-y: auto;
+    background: #fafafa; border-right: 1px solid #ccc; box-shadow: 2px 0 12px rgba(0,0,0,.08);
+    font: 14px/1.35 system-ui, sans-serif; color: #333;
+    transform: translateX(-105%); transition: transform .2s; }
+  body.sumario-aberto #sumario { transform: none; }
+  body.editando #sumario { top: 47px; padding-top: 48px; }
+  body.editando #b-sumario { top: 54px; }
+  #sumario .sum-titulo { font-weight: 600; color: #ff8000; margin: 0 0 6px 4px; }
+  #sumario ol { list-style: none; margin: 0; padding: 0; }
+  #sumario a { display: block; padding: 4px 6px; border-radius: 4px; color: #333; text-decoration: none; }
+  #sumario a:hover { background: #eef; }
+  #sumario a.nivel-1 { font-weight: 600; }
+  #sumario a.nivel-3 { padding-left: 22px; font-size: .92em; color: #555; }
+  #sumario a.atual { background: #ffe2c4; color: #000; }
+  @media (min-width: 1500px) { body.sumario-aberto .apostila { padding-left: 300px; } }
+  @media print { #b-sumario, #sumario { display: none !important; } }
 
   /* ---------- modo edição ---------- */
   #editar { position: fixed; top: 10px; right: 112px; z-index: 50;
@@ -187,6 +216,8 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
 </head>
 <body>
+<button id="b-sumario" type="button" title="Mostrar/ocultar o sumário">☰ Sumário</button>
+<nav id="sumario" aria-label="Sumário"><div class="sum-titulo">Sumário</div><ol id="sum-lista"></ol></nav>
 <a id="modo" href="#">Modo aula</a>
 <button id="editar" type="button">Editar</button>
 <div id="barra">
@@ -431,6 +462,60 @@
 
 <!-- =============================== PÁGINA 13 =============================== -->
 <section class="pagina">
+  <h2 class="fragment">11. Identidade de Parseval e erro quadrático médio</h2>
+  <p class="fragment">Na prática, não somamos infinitos termos: truncamos a série numa soma parcial. Precisamos então de uma medida do erro cometido, e de um modo de decidir quantos termos usar. A ferramenta para isso é mais uma consequência da ortogonalidade.</p>
+  <p class="fragment">Multiplicando a série de Fourier por \(f(x)\) e integrando de \(-L\) a \(L\), cada termo do lado direito vira uma das integrais das fórmulas de Euler–Fourier:</p>
+  <div class="eq fragment">\[ \begin{aligned} \int_{-L}^{L} [f(x)]^2\,dx &= \frac{a_0}{2}\int_{-L}^{L} f(x)\,dx + \sum_{n=1}^{\infty}\Big[ a_n\int_{-L}^{L} f(x)\cos\frac{n\pi x}{L}\,dx \\ &\hphantom{= \frac{a_0}{2}\int_{-L}^{L} f(x)\,dx + \sum_{n=1}^{\infty}\Big[} + b_n\int_{-L}^{L} f(x)\sen\frac{n\pi x}{L}\,dx \Big] \end{aligned} \]</div>
+  <div class="eq fragment">\[ = \frac{a_0}{2}\,L a_0 + \sum_{n=1}^{\infty}\big[ a_n\,L a_n + b_n\,L b_n \big]. \]</div>
+  <aside class="nota fragment">*: É o análogo do teorema de Pitágoras: \(|\vec v|^2 = v_x^2 + v_y^2 + v_z^2\) numa base ortogonal.</aside>
+  <p class="fragment sem-recuo">Dividindo por \(L\), obtemos a</p>
+  <div class="eq fragment caixa"><span class="rotulo">Identidade de Parseval:</span>\[ \frac1L\int_{-L}^{L} [f(x)]^2\,dx = \frac{a_0^2}{2} + \sum_{n=1}^{\infty}\big(a_n^2 + b_n^2\big). \]</div>
+  <p class="fragment">Agora, seja \(S_N\) a <span class="rotulo">soma parcial</span> com os harmônicos até a ordem \(N\),</p>
+  <div class="eq fragment">\[ S_N(x) = \frac{a_0}{2} + \sum_{n=1}^{N}\left[ a_n\cos\frac{n\pi x}{L} + b_n\sen\frac{n\pi x}{L} \right]. \]</div>
+  <p class="fragment sem-recuo">Medimos a qualidade da aproximação pelo <span class="rotulo">erro quadrático médio</span>, a média de \([f(x) - S_N(x)]^2\) num período:</p>
+  <div class="eq fragment">\[ E_N = \frac{1}{2L}\int_{-L}^{L} \big[f(x) - S_N(x)\big]^2\,dx. \]</div>
+  <div class="rodape">13</div>
+</section>
+
+<!-- =============================== PÁGINA 14 =============================== -->
+<section class="pagina">
+  <p class="fragment">A diferença \(f - S_N\) é a própria série de Fourier de \(f\), só com os harmônicos \(n &gt; N\). Aplicando a ela a identidade de Parseval,</p>
+  <div class="eq fragment">\[ E_N = \frac12\sum_{n=N+1}^{\infty}\big(a_n^2 + b_n^2\big). \]</div>
+  <p class="fragment sem-recuo">Essa é uma soma infinita, mas, subtraindo do total dado pela identidade de Parseval os termos até \(N\), ela vira uma soma finita:</p>
+  <div class="eq fragment caixa">\[ E_N = \frac{1}{2L}\int_{-L}^{L} [f(x)]^2\,dx - \left[\frac{a_0^2}{4} + \frac12\sum_{n=1}^{N}\big(a_n^2 + b_n^2\big)\right]. \]</div>
+  <p class="fragment">Basta calcular uma integral, a de \(f^2\), e os \(N\) primeiros coeficientes. Como \(E_N\) diminui quando \(N\) aumenta, aumentamos \(N\) até que \(E_N\) fique abaixo da tolerância desejada.</p>
+  <div class="rodape">14</div>
+</section>
+
+<!-- =============================== PÁGINA 15 =============================== -->
+<section class="pagina">
+  <h3 class="fragment"><span class="rotulo">Exemplo 3 (continuação):</span> quantos termos usar?</h3>
+  <p class="fragment">No Exemplo 3, a força externa \(f(t)\) é a onda quadrada de período \(2L = 3\pi\). Quantos termos de sua série de Fourier são necessários para que o erro quadrático médio fique menor que \(10^{-3}\)? E na solução particular \(y_p\)?</p>
+  <p class="fragment">Como \([f(t)]^2 = 1\), a integral é imediata:</p>
+  <div class="eq fragment">\[ \frac{1}{2L}\int_{-L}^{L} [f(t)]^2\,dt = \frac{1}{2L}\cdot 2L = 1. \]</div>
+  <p class="fragment sem-recuo">Como \(a_n = 0\) e \(b_n = 4/(n\pi)\) só para \(n\) ímpar, a fórmula do erro fica</p>
+  <div class="eq fragment">\[ E_N = 1 - \frac12\sum_{n \mt{ ímpar}\le N}\frac{16}{n^2\pi^2} = 1 - \frac{8}{\pi^2}\left[1 + \frac19 + \frac1{25} + \cdots + \frac1{N^2}\right]. \]</div>
+  <p class="fragment sem-recuo">Calculando com uma planilha ou um pequeno programa:</p>
+  <table class="tabela fragment">
+    <tbody><tr><th>\(N\)</th><td>1</td><td>3</td><td>9</td><td>41</td><td>99</td><td>199</td><td>403</td><td>405</td></tr>
+    <tr><th>\(E_N\)</th><td>0,189</td><td>0,0994</td><td>0,0404</td><td>0,00965</td><td>0,00405</td><td>0,00203</td><td>\(1{,}003\cdot10^{-3}\)</td><td>\(\red{9{,}98\cdot10^{-4}}\)</td></tr>
+  </tbody></table>
+  <aside class="nota fragment">*: \(E_N \to 0\) mesmo com o fenômeno de Gibbs: os "chifres" não diminuem, mas ficam cada vez mais estreitos.</aside>
+  <p class="fragment">O erro fica abaixo de \(10^{-3}\) pela primeira vez em \(N = 405\). Como só os harmônicos ímpares são não nulos, são necessários \((405 + 1)/2 = \red{203}\) <span class="rotulo">termos</span>.</p>
+  <aside class="nota fragment">*: Para \(n\) ímpar, \(\dfrac1{n^2} &lt; \dfrac12\displaystyle\int_{n-2}^{n}\frac{dx}{x^2}\), pois \(1/x^2\) é decrescente.</aside>
+  <p class="fragment">Para saber onde procurar sem testar todos os valores, estimamos a soma infinita de \(E_N\) por uma integral:</p>
+  <div class="eq fragment">\[ E_N = \frac{8}{\pi^2}\sum_{n\mt{ ímpar} &gt; N}\frac{1}{n^2} &lt; \frac{8}{\pi^2}\cdot\frac12\int_N^{\infty}\frac{dx}{x^2} = \frac{4}{\pi^2 N}. \]</div>
+  <p class="fragment sem-recuo">Logo, \(E_N &lt; 10^{-3}\) se \(N &gt; 4000/\pi^2 \approx 405{,}3\). A estimativa garante \(N = 407\), bem perto do valor exato.</p>
+  <div class="rodape">15</div>
+</section>
+
+<!-- =============================== PÁGINA 16 =============================== -->
+<section class="pagina">
+  <p class="fragment">Na solução particular, o termo ressonante \(-\frac{t}{3\pi}\cos 2t\) não é periódico e entra sempre inteiro. Truncamos apenas a parte periódica, a soma dos \(y_n\), cujos coeficientes são \(B_n = \dfrac{9}{n\pi(9 - n^2)}\), \(n\) ímpar, \(n \ne 3\). Eles decaem como \(1/n^3\), e a soma infinita converge muito depressa:</p>
+  <div class="eq fragment">\[ \begin{aligned} E_1 &= \frac12\big(B_5^2 + B_7^2 + B_9^2 + \cdots\big) \\ &\approx \frac12\big(1{,}282 + 0{,}105 + 0{,}020 + \cdots\big)\cdot 10^{-3} \approx \red{7{,}1\cdot 10^{-4}}. \end{aligned} \]</div>
+  <p class="fragment sem-recuo">Ou seja, para a solução bastam o termo ressonante e o harmônico \(n = 1\):</p>
+  <div class="eq fragment caixa">\[ y_p(t) \approx -\frac{t}{3\pi}\cos 2t + \frac{9}{8\pi}\sen\frac{2t}{3}. \]</div>
+  <p class="fragment">A EDO "suaviza" a força externa: o fator \(1/(\omega^2 - c_n^2)\) divide os coeficientes por \(n^2\), e a série da solução precisa de muito menos termos que a de \(f\).</p>
   <h2 class="fragment">Resumo</h2>
   <div class="caixa fragment">
     <ul>
@@ -440,10 +525,11 @@
       <li>Função par: só cossenos. Ímpar: só senos. Meia onda: só harmônicos ímpares (seção 6).</li>
       <li>Saltos dão coeficientes \(\sim 1/n\); funções contínuas com "bicos", \(\sim 1/n^2\) (Exemplos 1 e 2).</li>
       <li>Para EDOs lineares, resolva cada harmônico e some (superposição).&nbsp;</li><li>A 2ª ordem ressoa se algum harmônico coincidir com \(\omega\) (seção 9).</li>
+      <li>Identidade de Parseval: o erro quadrático médio de \(S_N\) é uma soma finita, e com ela escolhemos quantos termos usar (seção 11).</li>
     </ul>
   </div>
   <p class="fragment sem-recuo" style="font-size:.85em">Leitura no livro: Boyce &amp; DiPrima, seções 10.2 (séries de Fourier), 10.3 (teorema de convergência) e 10.4 (funções pares e ímpares).</p>
-  <div class="rodape">13</div>
+  <div class="rodape">16</div>
 </section>
 
 </main>
@@ -565,9 +651,67 @@
     });
     document.getElementById('prox').onclick = prox;
     document.getElementById('ant').onclick = ant;
+    // usado pelo sumário: mostra todas as camadas até o elemento escolhido
+    AULA.ir = alvo => {
+      let n = 0;
+      passos.forEach((p, i) => {
+        const e = p.els[0];
+        if (e === alvo || e.contains(alvo) || alvo.contains(e) || (alvo.compareDocumentPosition(e) & Node.DOCUMENT_POSITION_PRECEDING)) n = i + 1;
+      });
+      passos.forEach((p, i) => p.els.forEach(e => e.classList.toggle('visivel', i < n)));
+      k = n; atualizar();
+    };
     atualizar();
   }
+  const AULA = {};
   prepararAula();
+
+  // ---------- sumário no painel lateral (montado sozinho a partir dos títulos) ----------
+  const SUM = { itens: [] };
+  function textoTitulo(h) {
+    const c = h.cloneNode(true);
+    c.querySelectorAll('mjx-container').forEach(m => m.replaceWith(m.dataset.tex || ''));
+    return c.textContent.replace(/\s+/g, ' ').trim().replace(/[.:]$/, '');
+  }
+  function montarSumario() {
+    const lista = document.getElementById('sum-lista');
+    lista.innerHTML = ''; SUM.itens = [];
+    document.querySelectorAll('.apostila h1, .apostila h2, .apostila h3').forEach(h => {
+      const nivel = +h.tagName[1];
+      const t = textoTitulo(h);
+      if (!t || (nivel === 3 && !/^Exemplo/i.test(t))) return;   // dos h3, só os exemplos
+      const li = document.createElement('li'), a = document.createElement('a');
+      a.href = '#'; a.className = 'nivel-' + nivel; a.textContent = t;
+      a.onclick = ev => { ev.preventDefault(); irPara(h); a.blur(); };
+      li.append(a); lista.append(li);
+      SUM.itens.push({ h, a });
+    });
+    marcarAtual();
+  }
+  function irPara(h) {
+    if (AULA.ir) AULA.ir(h);
+    const topo = document.body.classList.contains('editando') ? 110 : 60;
+    window.scrollTo({ top: h.getBoundingClientRect().top + window.scrollY - topo, behavior: 'smooth' });
+    if (window.innerWidth < 1500) abrirSumario(false);
+  }
+  function marcarAtual() {
+    let atual = SUM.itens[0];
+    for (const it of SUM.itens) if (it.h.getBoundingClientRect().top < 160) atual = it;
+    SUM.itens.forEach(it => it.a.classList.toggle('atual', it === atual));
+  }
+  function abrirSumario(sim) {
+    document.body.classList.toggle('sumario-aberto', sim);
+    try { localStorage.setItem('apostila-sumario', sim ? '1' : '0'); } catch (e) {}
+  }
+  document.getElementById('b-sumario').onclick = () => abrirSumario(!document.body.classList.contains('sumario-aberto'));
+  window.addEventListener('scroll', () => { if (!marcarAtual.t) marcarAtual.t = requestAnimationFrame(() => { marcarAtual.t = 0; marcarAtual(); }); }, { passive: true });
+  (() => {
+    let pref = null;
+    try { pref = localStorage.getItem('apostila-sumario'); } catch (e) {}
+    const abrir = window.innerWidth >= 1100 && (pref === null ? (window.innerWidth >= 1500 && !MODO_AULA) : pref === '1');
+    document.body.classList.toggle('sumario-aberto', abrir);
+  })();
+  montarSumario();
 
   // ---------- modo edição (não precisa editar) ----------
   const ED = { range: null, bloco: null, alvo: null, modo: null, handle: null, sujo: false };
@@ -593,11 +737,13 @@
     document.body.classList.add('editando');
     try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch (e) {}
     document.querySelectorAll('section.pagina').forEach(s => s.setAttribute('contenteditable', 'true'));
+    montarSumario();
   }
   function sairEdicao() {
     document.body.classList.remove('editando');
     document.querySelectorAll('section.pagina').forEach(s => s.removeAttribute('contenteditable'));
     $('editor-eq').hidden = true;
+    montarSumario();
   }
 
   // posição atual do cursor dentro da apostila
@@ -611,7 +757,11 @@
     ED.bloco = n.closest(BLOCOS) || null;
     $('b-camada').classList.toggle('ligada', !!(ED.bloco && ED.bloco.classList.contains('fragment')));
   });
-  document.addEventListener('input', e => { if (e.target.closest && e.target.closest('section.pagina')) ED.sujo = true; });
+  document.addEventListener('input', e => {
+    if (!(e.target.closest && e.target.closest('section.pagina'))) return;
+    ED.sujo = true;
+    clearTimeout(montarSumario.t); montarSumario.t = setTimeout(montarSumario, 600);
+  });
 
   // barra: mousedown não tira o cursor do texto
   document.querySelectorAll('#barra button').forEach(b => b.addEventListener('mousedown', e => e.preventDefault()));
@@ -671,7 +821,7 @@
     if (ED.alvo) ED.alvo.replaceWith(c);
     else if (ED.modo === 'inline') { ED.range.collapse(false); ED.range.insertNode(c); }
     else { const d = document.createElement('div'); d.className = 'eq'; d.append(c); ED.bloco.after(d); }
-    ED.sujo = true; $('editor-eq').hidden = true;
+    ED.sujo = true; $('editor-eq').hidden = true; montarSumario();
   };
   $('ee-tex').addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $('ee-aplicar').click(); }
@@ -706,6 +856,7 @@
     doc.querySelector('#ee-tex').value = '';
     doc.querySelector('#aviso').textContent = '';
     doc.querySelector('#contador').textContent = '';
+    doc.querySelector('#sum-lista').innerHTML = '';
     const m = doc.querySelector('#modo'); m.textContent = 'Modo aula'; m.setAttribute('href', '#');
     limparExtensoes(doc);
     // dentro das fórmulas, mantém "&" legível no código (ex.: \begin{cases} a & b)
@@ -774,7 +925,7 @@
   window.addEventListener('beforeunload', e => { if (ED.sujo) { e.preventDefault(); e.returnValue = ''; } });
   if (new URLSearchParams(location.search).has('editar') && !MODO_AULA) entrarEdicao();
 
-  MathJax.startup.promise.then(() => MathJax.typesetPromise()).then(guardarTex);
+  MathJax.startup.promise.then(() => MathJax.typesetPromise()).then(guardarTex).then(montarSumario);
 </script>
 
 
