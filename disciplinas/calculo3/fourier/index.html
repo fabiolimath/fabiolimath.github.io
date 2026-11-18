@@ -8,13 +8,14 @@
   ============================================================
   APOSTILA EM HTML · COMO EDITAR
   ------------------------------------------------------------
-  TRÊS MODOS (mesmo arquivo): leitura, aula e edição. Os botões do canto
-  superior direito trocam de modo sem recarregar a página: a posição é mantida
+  TRÊS MODOS (mesmo arquivo): leitura, aula e edição. Os ícones do canto
+  superior direito (livro, quadro, lápis) trocam de modo sem recarregar a
+  página; o disquete aparece quando há alterações não salvas. A posição é mantida
   e as edições ainda não salvas continuam lá (dá para ver as camadas no modo
   aula e voltar a editar sem salvar).
     * Modo leitura (padrão): páginas em rolagem, tudo visível. Para os alunos.
       Zoom normal do navegador (Ctrl + / Ctrl -) funciona.
-    * Modo aula: botão no canto superior direito (ou ?aula no endereço).
+    * Modo aula: ícone do quadro no canto superior direito (ou ?aula no endereço).
       As "camadas" aparecem uma a uma, como no Xournal++:
         → , Espaço, PageDown = próxima camada    ← , PageUp = volta uma
       (funciona com passador de slides). A página rola sozinha até a camada.
@@ -34,18 +35,20 @@
         <aside class="nota">*: texto da nota</aside>
       colocada logo ANTES do parágrafo/equação a que se refere.
     * Caixa de destaque: class="caixa". Rótulo laranja: <span class="rotulo">.
+      Outras cores de destaque: <span class="cor-vermelho">, "cor-verde", "cor-roxo".
     * Exemplo: <h3><span class="rotulo">Exemplo 1:</span> ...</h3>
     * Sumário: botão "☰ Sumário" (canto superior esquerdo), nos três modos.
       É montado sozinho a partir dos títulos <h1>, <h2> e dos <h3> que começam
       com "Exemplo"; basta escrever os títulos normalmente.
   EDIÇÃO VISUAL (sem precisar mexer no código):
-    * Abra o arquivo no navegador (dois cliques) e clique em "Editar".
+    * Abra o arquivo no navegador (dois cliques) e clique no lápis.
     * Clique no texto e digite, como num editor comum.
     * Clique numa fórmula para editar o LaTeX (com prévia). Ctrl+Enter aplica.
-    * A barra de cima insere fórmulas, notas laterais, destaque laranja e
+    * A barra de cima insere fórmulas ($ na linha, $$ destacada), notas
+      laterais, destaque colorido (quadrados de cor) e
       liga/desliga a camada do parágrafo onde está o cursor (as camadas
       aparecem com uma barra laranja à esquerda).
-    * "Salvar" (ou Ctrl+S) grava o arquivo. No Chrome/Edge, na 1ª vez ele
+    * O disquete (ou Ctrl+S) grava o arquivo, em qualquer modo. No Chrome/Edge, na 1ª vez ele
       pergunta onde salvar; escolha o próprio arquivo para sobrescrever.
       Em outros navegadores, baixa uma cópia.
   ============================================================
@@ -54,6 +57,9 @@
   :root {
     --laranja: #ff8000;
     --azul: #3333cc;
+    --vermelho: #d01c1c;
+    --verde: #1b8a3a;
+    --roxo: #8e24aa;
     --vermelho: #dd1111;
     --tinta: #111111;
     --fundo: #ffffff;
@@ -61,9 +67,9 @@
   }
   /* A apostila é "papel branco"; o tema escuro só vale se tirar data-theme="light" do <html>. */
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --fundo: #17191e; --tinta: #eeeeee; --azul: #a5b0ff; --mesa: #0d0e11; }
+    :root:not([data-theme="light"]) { --fundo: #17191e; --tinta: #eeeeee; --azul: #a5b0ff; --mesa: #0d0e11; --vermelho: #ff7070; --verde: #5fd17f; --roxo: #d58cf0; }
   }
-  :root[data-theme="dark"] { --fundo: #17191e; --tinta: #eeeeee; --azul: #a5b0ff; --mesa: #0d0e11; }
+  :root[data-theme="dark"] { --fundo: #17191e; --tinta: #eeeeee; --azul: #a5b0ff; --mesa: #0d0e11; --vermelho: #ff7070; --verde: #5fd17f; --roxo: #d58cf0; }
 
   html, body { background: var(--mesa); margin: 0; }
   .apostila { padding: 24px 16px 80px; }
@@ -95,6 +101,9 @@
   .apostila li { margin: .2em 0; }
   .apostila .eq { color: var(--tinta); margin: .25em 0 .7em; text-indent: 0; clear: both; }
   .apostila .rotulo { color: var(--laranja); }
+  .apostila .cor-vermelho { color: var(--vermelho); }
+  .apostila .cor-verde { color: var(--verde); }
+  .apostila .cor-roxo { color: var(--roxo); }
   .apostila .caixa { clear: both; border: 1.5px solid var(--laranja); border-radius: 6px; padding: .3em .9em; margin: .4em 0 .9em; color: var(--tinta); }
   .apostila .caixa p { color: var(--azul); }
   .apostila aside.nota {
@@ -136,13 +145,22 @@
     #passos { display: none !important; }
   }
 
-  #modo {
-    position: fixed; top: 10px; right: 12px; z-index: 50;
-    font: 14px system-ui, sans-serif; background: #fff; color: #333;
-    border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; text-decoration: none;
-  }
-  #modo:hover { background: #f3f3f3; }
-  @media print { #modo { display: none; } }
+  /* ---------- ícones dos modos e salvar (canto superior direito) ---------- */
+  #modos { position: fixed; top: 8px; right: 12px; z-index: 65; display: flex; gap: 6px; align-items: center;
+    font: 14px system-ui, sans-serif; }
+  #modos button { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 34px; padding: 0;
+    background: #fff; color: #444; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; }
+  #modos button:hover { background: #f3f3f3; }
+  #modos button svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  #modos button.ativo { background: #ffe2c4; border-color: #ff8000; color: #b35900; }
+  #modos #b-salvar { display: none; background: #2a6; border-color: #2a6; color: #fff; }
+  #modos #b-salvar:hover { background: #239a58; }
+  body.sujo #modos #b-salvar { display: inline-flex; }
+  #modos .sep { width: 1px; height: 24px; background: #ccc; margin: 0 2px; display: none; }
+  body.sujo #modos .sep { display: block; }
+  #aviso { color: #2a6; background: #fff; border-radius: 4px; padding: 0 4px; }
+  #aviso:empty { display: none; }
+  @media print { #modos { display: none !important; } }
 
   /* ---------- sumário (painel lateral) ---------- */
   #b-sumario { position: fixed; top: 10px; left: 12px; z-index: 66;
@@ -168,23 +186,18 @@
   @media print { #b-sumario, #sumario { display: none !important; } }
 
   /* ---------- modo edição ---------- */
-  #editar { position: fixed; top: 10px; right: 112px; z-index: 50;
-    font: 14px system-ui, sans-serif; background: #fff; color: #333;
-    border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
-  #editar:hover { background: #f3f3f3; }
-  body.aula #editar { right: 128px; }
-  body.editando #editar, body.editando #modo { display: none; }
   #barra { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 60;
     background: #fafafa; border-bottom: 1px solid #ccc; padding: 6px 10px; gap: 6px; flex-wrap: wrap;
     justify-content: center; align-items: center; font: 14px system-ui, sans-serif; color: #333; }
-  body.editando #barra { display: flex; }
+  body.editando #barra { display: flex; padding-right: 200px; }
   body.editando .apostila { padding-top: 64px; }
   #barra button { font: inherit; border: 1px solid #ccc; background: #fff; border-radius: 5px; padding: 5px 10px; cursor: pointer; }
   #barra button:hover { background: #eef; }
   #barra .sep { width: 1px; height: 22px; background: #ccc; margin: 0 4px; }
-  #barra #b-salvar { background: #2a6; color: #fff; border-color: #2a6; }
   #barra #b-camada.ligada { background: #ffe2c4; border-color: #ff8000; }
-  #aviso { margin-left: 8px; color: #2a6; min-width: 60px; }
+  #barra .b-eq { font-family: ui-monospace, Consolas, monospace; font-weight: 600; min-width: 38px; }
+  #barra .b-cor { width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+  #barra .b-cor::before { content: ""; width: 16px; height: 16px; border-radius: 3px; background: var(--c); }
   body.editando section.pagina { outline: none; }
   body.editando .fragment { visibility: visible; opacity: 1; box-shadow: -12px 0 0 -9px #ffb366; }
   body.editando mjx-container { cursor: pointer; border-radius: 4px; }
@@ -200,7 +213,7 @@
   #editor-eq .ee-botoes { display: flex; gap: 6px; justify-content: flex-end; margin-top: 8px; }
   #editor-eq button { font: inherit; border: 1px solid #ccc; background: #fff; border-radius: 5px; padding: 5px 12px; cursor: pointer; }
   #ee-aplicar { background: #2a6 !important; color: #fff; border-color: #2a6 !important; }
-  @media print { #editar, #barra, #editor-eq { display: none !important; } }
+  @media print { #barra, #editor-eq { display: none !important; } }
 </style>
 <script>
   window.MathJax = {
@@ -225,20 +238,24 @@
 <body>
 <button id="b-sumario" type="button" title="Mostrar/ocultar o sumário">☰ Sumário</button>
 <nav id="sumario" aria-label="Sumário"><div class="sum-titulo">Sumário</div><ol id="sum-lista"></ol></nav>
-<a id="modo" href="#">Modo aula</a>
-<button id="editar" type="button">Editar</button>
+<div id="modos">
+  <span id="aviso"></span>
+  <button type="button" id="b-salvar" title="Salvar (Ctrl+S): há alterações não salvas" aria-label="Salvar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M8 3v5h7V3"/><rect x="7" y="13" width="10" height="6" rx="1"/></svg></button>
+  <span class="sep"></span>
+  <button type="button" id="m-leitura" data-modo="leitura" title="Modo leitura" aria-label="Modo leitura"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5C5.5 4.3 8.5 4.3 12 6c3.5-1.7 6.5-1.7 9-.5V19c-2.5-1.2-5.5-1.2-9 .5-3.5-1.7-6.5-1.7-9-.5z"/><path d="M12 6v13.5"/></svg></button>
+  <button type="button" id="m-aula" data-modo="aula" title="Modo aula (camadas)" aria-label="Modo aula"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v3M8 21l4-2 4 2"/><path d="M10 7.8v4.4l3.8-2.2z"/></svg></button>
+  <button type="button" id="m-edicao" data-modo="edicao" title="Modo edição" aria-label="Modo edição"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button>
+</div>
 <div id="barra">
   <button type="button" id="b-camada" title="Liga/desliga: o parágrafo onde está o cursor aparece por clique no modo aula">Camada</button>
   <span class="sep"></span>
-  <button type="button" id="b-inline" title="Fórmula no meio do texto, na posição do cursor">Fórmula na linha</button>
-  <button type="button" id="b-display" title="Equação centralizada, abaixo do parágrafo atual">Equação destacada</button>
+  <button type="button" id="b-inline" class="b-eq" title="Fórmula no meio do texto, na posição do cursor">$</button>
+  <button type="button" id="b-display" class="b-eq" title="Equação destacada (centralizada), abaixo do parágrafo atual">$$</button>
   <button type="button" id="b-nota" title="Nota lateral vermelha (*:) ao lado do parágrafo atual">Nota lateral</button>
-  <button type="button" id="b-laranja" title="Destaca em laranja o texto selecionado (ou remove o destaque)">Laranja</button>
-  <span class="sep"></span>
-  <button type="button" id="b-salvar" title="Ctrl+S">Salvar</button>
-  <button type="button" id="b-aula" title="Vê as camadas no modo aula sem salvar; volte com o botão Editar">Ver no modo aula</button>
-  <button type="button" id="b-sair" title="Volta ao modo leitura (as edições não salvas continuam na página)">Sair da edição</button>
-  <span id="aviso"></span>
+  <button type="button" class="b-cor" data-cor="rotulo" style="--c: #ff8000" title="Laranja: destaca o texto selecionado (clique de novo para remover)" aria-label="Laranja"></button>
+  <button type="button" class="b-cor" data-cor="cor-vermelho" style="--c: #d01c1c" title="Vermelho: destaca o texto selecionado (clique de novo para remover)" aria-label="Vermelho"></button>
+  <button type="button" class="b-cor" data-cor="cor-verde" style="--c: #1b8a3a" title="Verde: destaca o texto selecionado (clique de novo para remover)" aria-label="Verde"></button>
+  <button type="button" class="b-cor" data-cor="cor-roxo" style="--c: #8e24aa" title="Roxo: destaca o texto selecionado (clique de novo para remover)" aria-label="Roxo"></button>
 </div>
 <main class="apostila">
 
@@ -560,7 +577,6 @@
 <script>
   // ---------- modo leitura (padrão) x modo aula (?aula) x edição (?editar) ----------
   const MODO_AULA = new URLSearchParams(location.search).has('aula');
-  const botao = document.getElementById('modo');
 
   // ---------- gráfico das somas parciais (não precisa editar) ----------
   function desenharQuadrada(svg) {
@@ -721,13 +737,15 @@
       const ref = cursor || (a && a.el);
       if (ref) mostrarAte(ref, false); else { AULA.k = 0; atualizarContador(); }
     }
-    botao.textContent = novo === 'aula' ? 'Modo leitura' : 'Modo aula';
-    botao.href = location.pathname + (novo === 'aula' ? '' : '?aula');
+    document.querySelectorAll('#modos [data-modo]').forEach(b => b.classList.toggle('ativo', b.dataset.modo === novo));
     try { history.replaceState(null, '', location.pathname + (novo === 'aula' ? '?aula' : novo === 'edicao' ? '?editar' : '') + location.hash); } catch (e) {}
     restaurar(a);
     if (typeof montarSumario === 'function' && SUM.itens) montarSumario();
   }
-  botao.addEventListener('click', ev => { ev.preventDefault(); mudarModo(emAula() ? 'leitura' : 'aula'); });
+  document.querySelectorAll('#modos [data-modo]').forEach(b => {
+    b.addEventListener('mousedown', e => e.preventDefault());   // não tira o cursor do texto
+    b.addEventListener('click', () => { mudarModo(b.dataset.modo); b.blur(); });
+  });
 
   // ---------- sumário no painel lateral (montado sozinho a partir dos títulos) ----------
   const SUM = { itens: [] };
@@ -778,6 +796,8 @@
 
   // ---------- modo edição (não precisa editar) ----------
   const ED = { range: null, bloco: null, alvo: null, modo: null, handle: null, sujo: false };
+  // marca se há alterações não salvas (mostra o disquete)
+  function sujo(v) { ED.sujo = v; document.body.classList.toggle('sujo', v); }
   const $ = id => document.getElementById(id);
   const BLOCOS = 'p, div.eq, div.caixa, h1, h2, h3, aside.nota, li, .subtitulo';
 
@@ -822,7 +842,7 @@
   });
   document.addEventListener('input', e => {
     if (!(e.target.closest && e.target.closest('section.pagina'))) return;
-    ED.sujo = true;
+    sujo(true);
     clearTimeout(montarSumario.t); montarSumario.t = setTimeout(montarSumario, 600);
   });
 
@@ -831,23 +851,30 @@
 
   $('b-camada').onclick = () => {
     if (!ED.bloco) return avisar('Clique num parágrafo');
-    ED.bloco.classList.toggle('fragment'); ED.sujo = true;
+    ED.bloco.classList.toggle('fragment'); sujo(true);
     $('b-camada').classList.toggle('ligada', ED.bloco.classList.contains('fragment'));
   };
-  $('b-laranja').onclick = () => {
+  // destaque colorido: envolve a seleção; clicar de novo na mesma cor remove, em outra cor troca
+  const CORES = ['rotulo', 'cor-vermelho', 'cor-verde', 'cor-roxo'];
+  document.querySelectorAll('#barra .b-cor').forEach(bt => bt.onclick = () => {
+    const cor = bt.dataset.cor;
     const sel = getSelection(); if (!sel.rangeCount) return;
     const r = sel.getRangeAt(0);
     const n = r.startContainer.nodeType === 1 ? r.startContainer : r.startContainer.parentElement;
-    const span = n && n.closest('span.rotulo');
-    if (span) { span.replaceWith(...span.childNodes); ED.sujo = true; return; }
+    const span = n && n.closest(CORES.map(c => 'span.' + c).join(', '));
+    if (span && (r.collapsed || span.contains(r.endContainer))) {
+      if (span.classList.contains(cor)) span.replaceWith(...span.childNodes);
+      else { CORES.forEach(c => span.classList.remove(c)); span.classList.add(cor); }
+      sujo(true); return;
+    }
     if (r.collapsed) return avisar('Selecione o texto');
-    const s = document.createElement('span'); s.className = 'rotulo';
-    s.append(r.extractContents()); r.insertNode(s); ED.sujo = true;
-  };
+    const s = document.createElement('span'); s.className = cor;
+    s.append(r.extractContents()); r.insertNode(s); sujo(true);
+  });
   $('b-nota').onclick = () => {
     if (!ED.bloco) return avisar('Clique num parágrafo');
     const a = document.createElement('aside'); a.className = 'nota'; a.textContent = '*:\u00a0';
-    ED.bloco.before(a); ED.sujo = true;
+    ED.bloco.before(a); sujo(true);
     const r = document.createRange(); r.selectNodeContents(a); r.collapse(false);
     getSelection().removeAllRanges(); getSelection().addRange(r);
   };
@@ -876,7 +903,7 @@
   $('ee-remover').onclick = () => {
     const pai = ED.alvo.parentElement; ED.alvo.remove();
     if (pai.matches('div.eq') && !pai.textContent.trim() && !pai.querySelector('mjx-container')) pai.remove();
-    ED.sujo = true; $('editor-eq').hidden = true;
+    sujo(true); $('editor-eq').hidden = true;
   };
   $('ee-aplicar').onclick = async () => {
     const t = $('ee-tex').value.trim(); if (!t) return;
@@ -884,7 +911,7 @@
     if (ED.alvo) ED.alvo.replaceWith(c);
     else if (ED.modo === 'inline') { ED.range.collapse(false); ED.range.insertNode(c); }
     else { const d = document.createElement('div'); d.className = 'eq'; d.append(c); ED.bloco.after(d); }
-    ED.sujo = true; $('editor-eq').hidden = true; montarSumario();
+    sujo(true); $('editor-eq').hidden = true; montarSumario();
   };
   $('ee-tex').addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $('ee-aplicar').click(); }
@@ -920,7 +947,7 @@
     doc.querySelector('#aviso').textContent = '';
     doc.querySelector('#contador').textContent = '';
     doc.querySelector('#sum-lista').innerHTML = '';
-    const m = doc.querySelector('#modo'); m.textContent = 'Modo aula'; m.setAttribute('href', '#');
+    doc.querySelectorAll('#modos .ativo').forEach(e => e.classList.remove('ativo'));
     limparExtensoes(doc);
     // dentro das fórmulas, mantém "&" legível no código (ex.: \begin{cases} a & b)
     const html = doc.outerHTML.replace(/\\[\[(][\s\S]*?\\[\])]/g, m => m.replace(/&amp;/g, '&'));
@@ -968,23 +995,21 @@
       if (window.showSaveFilePicker && !emIframe) {
         if (!ED.handle) ED.handle = await showSaveFilePicker({ suggestedName: nome, types: [{ description: 'Página HTML', accept: { 'text/html': ['.html'] } }] });
         const w = await ED.handle.createWritable(); await w.write(html); await w.close();
-        ED.sujo = false; avisar('Salvo ✓');
+        sujo(false); avisar('Salvo ✓');
       } else {
         baixar(html, nome);
-        ED.sujo = false; avisar('Baixado ✓');
+        sujo(false); avisar('Baixado ✓');
       }
     } catch (e) {
       if (e.name === 'AbortError') return;
-      try { baixar(html, nome); ED.sujo = false; avisar('Baixado ✓'); }
+      try { baixar(html, nome); sujo(false); avisar('Baixado ✓'); }
       catch (e2) { avisar('Erro ao salvar'); }
     }
   }
   $('b-salvar').onclick = salvar;
-  $('b-sair').onclick = () => mudarModo('leitura');
-  $('b-aula').onclick = () => mudarModo('aula');
-  $('editar').onclick = () => mudarModo('edicao');
+  $('b-salvar').addEventListener('mousedown', e => e.preventDefault());
   document.addEventListener('keydown', e => {
-    if (document.body.classList.contains('editando') && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); salvar(); }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's' && (ED.sujo || document.body.classList.contains('editando'))) { e.preventDefault(); salvar(); }
   });
   window.addEventListener('beforeunload', e => { if (ED.sujo) { e.preventDefault(); e.returnValue = ''; } });
   if (MODO_AULA) mudarModo('aula', true);
