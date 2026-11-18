@@ -8,13 +8,19 @@
   ============================================================
   APOSTILA EM HTML · COMO EDITAR
   ------------------------------------------------------------
-  DOIS MODOS (mesmo arquivo):
+  TRÊS MODOS (mesmo arquivo): leitura, aula e edição. Os botões do canto
+  superior direito trocam de modo sem recarregar a página: a posição é mantida
+  e as edições ainda não salvas continuam lá (dá para ver as camadas no modo
+  aula e voltar a editar sem salvar).
     * Modo leitura (padrão): páginas em rolagem, tudo visível. Para os alunos.
       Zoom normal do navegador (Ctrl + / Ctrl -) funciona.
     * Modo aula: botão no canto superior direito (ou ?aula no endereço).
       As "camadas" aparecem uma a uma, como no Xournal++:
         → , Espaço, PageDown = próxima camada    ← , PageUp = volta uma
       (funciona com passador de slides). A página rola sozinha até a camada.
+      Ao entrar no modo aula, as camadas anteriores ao ponto onde você está
+      (ou ao parágrafo do cursor, vindo da edição) já aparecem; a próxima
+      seta mostra a camada seguinte.
 
   ESTRUTURA:
     * Cada <section class="pagina"> é uma página A4. Se o texto não couber,
@@ -166,7 +172,8 @@
     font: 14px system-ui, sans-serif; background: #fff; color: #333;
     border: 1px solid #ccc; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
   #editar:hover { background: #f3f3f3; }
-  body.aula #editar, body.editando #editar, body.editando #modo { display: none; }
+  body.aula #editar { right: 128px; }
+  body.editando #editar, body.editando #modo { display: none; }
   #barra { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 60;
     background: #fafafa; border-bottom: 1px solid #ccc; padding: 6px 10px; gap: 6px; flex-wrap: wrap;
     justify-content: center; align-items: center; font: 14px system-ui, sans-serif; color: #333; }
@@ -229,7 +236,8 @@
   <button type="button" id="b-laranja" title="Destaca em laranja o texto selecionado (ou remove o destaque)">Laranja</button>
   <span class="sep"></span>
   <button type="button" id="b-salvar" title="Ctrl+S">Salvar</button>
-  <button type="button" id="b-sair">Sair da edição</button>
+  <button type="button" id="b-aula" title="Vê as camadas no modo aula sem salvar; volte com o botão Editar">Ver no modo aula</button>
+  <button type="button" id="b-sair" title="Volta ao modo leitura (as edições não salvas continuam na página)">Sair da edição</button>
   <span id="aviso"></span>
 </div>
 <main class="apostila">
@@ -550,11 +558,9 @@
 <div id="passos"><button id="ant" title="Camada anterior (←)">◀</button><span id="contador"></span><button id="prox" title="Próxima camada (→)">▶</button></div>
 
 <script>
-  // ---------- modo leitura (padrão) x modo aula (?aula) ----------
+  // ---------- modo leitura (padrão) x modo aula (?aula) x edição (?editar) ----------
   const MODO_AULA = new URLSearchParams(location.search).has('aula');
   const botao = document.getElementById('modo');
-  botao.textContent = MODO_AULA ? 'Modo leitura' : 'Modo aula';
-  botao.href = MODO_AULA ? location.pathname : location.pathname + '?aula';
 
   // ---------- gráfico das somas parciais (não precisa editar) ----------
   function desenharQuadrada(svg) {
@@ -622,56 +628,106 @@
   document.querySelectorAll('svg[data-tipo]').forEach(desenharCurvas);
 
   // ---------- modo aula: camadas aparecem uma a uma ----------
-  function prepararAula() {
-    if (!MODO_AULA) return;
-    document.body.classList.add('aula');
-    // agrupa elementos com o mesmo data-junto em uma única camada
+  // As camadas são recalculadas a cada entrada no modo aula, a partir da página
+  // como ela está agora (inclusive com edições ainda não salvas).
+  const AULA = { passos: [], k: 0 };
+  function emAula() { return document.body.classList.contains('aula'); }
+  function contarCamadas() {
     const passos = [];
-    document.querySelectorAll('.fragment').forEach(el => {
+    // agrupa elementos com o mesmo data-junto em uma única camada
+    document.querySelectorAll('.apostila .fragment').forEach(el => {
       const j = el.getAttribute('data-junto');
       const ult = passos[passos.length - 1];
       if (j && ult && ult.junto === j) ult.els.push(el);
       else passos.push({ junto: j, els: [el] });
     });
-    let k = 0;   // camadas visíveis
-    const cont = document.getElementById('contador');
-    const atualizar = () => { cont.textContent = k + ' / ' + passos.length; };
-    const prox = () => {
-      if (k >= passos.length) return;
-      const p = passos[k++];
-      p.els.forEach(e => e.classList.add('visivel'));
-      p.els[p.els.length - 1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      atualizar();
-    };
-    const ant = () => {
-      if (k <= 0) return;
-      const p = passos[--k];
-      p.els.forEach(e => e.classList.remove('visivel'));
-      const v = passos[k - 1];
-      if (v) v.els[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      atualizar();
-    };
-    document.addEventListener('keydown', ev => {
-      if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
-      if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(ev.key)) { ev.preventDefault(); prox(); }
-      else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(ev.key)) { ev.preventDefault(); ant(); }
-    });
-    document.getElementById('prox').onclick = prox;
-    document.getElementById('ant').onclick = ant;
-    // usado pelo sumário: mostra todas as camadas até o elemento escolhido
-    AULA.ir = alvo => {
-      let n = 0;
-      passos.forEach((p, i) => {
-        const e = p.els[0];
-        if (e === alvo || e.contains(alvo) || alvo.contains(e) || (alvo.compareDocumentPosition(e) & Node.DOCUMENT_POSITION_PRECEDING)) n = i + 1;
-      });
-      passos.forEach((p, i) => p.els.forEach(e => e.classList.toggle('visivel', i < n)));
-      k = n; atualizar();
-    };
-    atualizar();
+    AULA.passos = passos;
   }
-  const AULA = {};
-  prepararAula();
+  function atualizarContador() { document.getElementById('contador').textContent = AULA.k + ' / ' + AULA.passos.length; }
+  // mostra as camadas que vêm antes de "alvo" (o alvo, se for camada, fica para a próxima seta)
+  function mostrarAte(alvo, incluir) {
+    let n = 0;
+    AULA.passos.forEach((p, i) => {
+      const e = p.els[0];
+      const dentro = e === alvo || e.contains(alvo) || alvo.contains(e);
+      if ((incluir && dentro) || (!dentro && (alvo.compareDocumentPosition(e) & Node.DOCUMENT_POSITION_PRECEDING))) n = i + 1;
+    });
+    AULA.passos.forEach((p, i) => p.els.forEach(e => e.classList.toggle('visivel', i < n)));
+    AULA.k = n; atualizarContador();
+  }
+  function prox() {
+    if (AULA.k >= AULA.passos.length) return;
+    const p = AULA.passos[AULA.k++];
+    p.els.forEach(e => e.classList.add('visivel'));
+    p.els[p.els.length - 1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    atualizarContador();
+  }
+  function ant() {
+    if (AULA.k <= 0) return;
+    const p = AULA.passos[--AULA.k];
+    p.els.forEach(e => e.classList.remove('visivel'));
+    const v = AULA.passos[AULA.k - 1];
+    if (v) v.els[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    atualizarContador();
+  }
+  document.addEventListener('keydown', ev => {
+    if (!emAula() || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    if (ev.target.closest && ev.target.closest('input, textarea, [contenteditable="true"]')) return;
+    if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(ev.key)) { ev.preventDefault(); prox(); }
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(ev.key)) { ev.preventDefault(); ant(); }
+  });
+  document.getElementById('prox').onclick = prox;
+  document.getElementById('ant').onclick = ant;
+  // usado pelo sumário: mostra todas as camadas até o elemento escolhido
+  AULA.ir = alvo => { if (emAula()) mostrarAte(alvo, true); };
+
+  // ---------- troca de modo sem recarregar, mantendo a posição ----------
+  const ANCORAS = 'section.pagina p, section.pagina div.eq, section.pagina div.caixa, section.pagina h1, section.pagina h2, section.pagina h3, section.pagina li, section.pagina svg, section.pagina figure, section.pagina table, section.pagina .subtitulo';
+  // primeiro bloco visível logo abaixo do topo da janela (descontando a barra de edição)
+  function ancoraAtual() {
+    const y = (document.body.classList.contains('editando') ? 64 : 0) + 70;
+    for (const e of document.querySelectorAll(ANCORAS)) {
+      const r = e.getBoundingClientRect();
+      if (r.height > 0 && r.bottom > y) return { el: e, topo: r.top };
+    }
+    return null;
+  }
+  function restaurar(a) {
+    if (!a) return;
+    const d = a.el.getBoundingClientRect().top - a.topo;
+    if (d) window.scrollTo({ top: window.scrollY + d, behavior: 'instant' });
+  }
+  function noEcra(e) {
+    if (!e || !e.isConnected) return false;
+    const r = e.getBoundingClientRect();
+    return r.height > 0 && r.bottom > 64 && r.top < window.innerHeight;
+  }
+  function modoAtual() { return document.body.classList.contains('editando') ? 'edicao' : emAula() ? 'aula' : 'leitura'; }
+  function mudarModo(novo, inicio) {
+    const antes = modoAtual();
+    if (novo === antes && !inicio) return;
+    const a = inicio ? null : ancoraAtual();
+    // vindo da edição: o parágrafo do cursor (se estiver na tela) é a próxima camada
+    const cursor = antes === 'edicao' && typeof ED !== 'undefined' && noEcra(ED.bloco) ? ED.bloco : null;
+    if (antes === 'edicao') sairEdicao();
+    if (antes === 'aula') {
+      document.body.classList.remove('aula');
+      document.querySelectorAll('.visivel').forEach(e => e.classList.remove('visivel'));
+    }
+    if (novo === 'edicao') entrarEdicao();
+    if (novo === 'aula') {
+      contarCamadas();
+      document.body.classList.add('aula');
+      const ref = cursor || (a && a.el);
+      if (ref) mostrarAte(ref, false); else { AULA.k = 0; atualizarContador(); }
+    }
+    botao.textContent = novo === 'aula' ? 'Modo leitura' : 'Modo aula';
+    botao.href = location.pathname + (novo === 'aula' ? '' : '?aula');
+    try { history.replaceState(null, '', location.pathname + (novo === 'aula' ? '?aula' : novo === 'edicao' ? '?editar' : '') + location.hash); } catch (e) {}
+    restaurar(a);
+    if (typeof montarSumario === 'function' && SUM.itens) montarSumario();
+  }
+  botao.addEventListener('click', ev => { ev.preventDefault(); mudarModo(emAula() ? 'leitura' : 'aula'); });
 
   // ---------- sumário no painel lateral (montado sozinho a partir dos títulos) ----------
   const SUM = { itens: [] };
@@ -924,13 +980,16 @@
     }
   }
   $('b-salvar').onclick = salvar;
-  $('b-sair').onclick = sairEdicao;
-  $('editar').onclick = entrarEdicao;
+  $('b-sair').onclick = () => mudarModo('leitura');
+  $('b-aula').onclick = () => mudarModo('aula');
+  $('editar').onclick = () => mudarModo('edicao');
   document.addEventListener('keydown', e => {
     if (document.body.classList.contains('editando') && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); salvar(); }
   });
   window.addEventListener('beforeunload', e => { if (ED.sujo) { e.preventDefault(); e.returnValue = ''; } });
-  if (new URLSearchParams(location.search).has('editar') && !MODO_AULA) entrarEdicao();
+  if (MODO_AULA) mudarModo('aula', true);
+  else if (new URLSearchParams(location.search).has('editar')) mudarModo('edicao', true);
+  else mudarModo('leitura', true);
 
   MathJax.startup.promise.then(() => MathJax.typesetPromise()).then(guardarTex).then(montarSumario);
 </script>
