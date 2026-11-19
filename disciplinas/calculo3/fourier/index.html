@@ -884,6 +884,8 @@
   // editor de fórmulas
   function abrirEditor(alvo, modo, tex, display) {
     ED.alvo = alvo; ED.modo = modo;
+    // a equação clicada passa a ser a posição atual (usada ao ir para o modo aula)
+    if (alvo && alvo.closest(BLOCOS)) ED.bloco = alvo.closest(BLOCOS);
     $('ee-tex').value = tex; $('ee-display').checked = display;
     $('ee-remover').style.display = alvo ? '' : 'none';
     $('editor-eq').hidden = false; previa(); $('ee-tex').focus();
@@ -911,6 +913,7 @@
     if (ED.alvo) ED.alvo.replaceWith(c);
     else if (ED.modo === 'inline') { ED.range.collapse(false); ED.range.insertNode(c); }
     else { const d = document.createElement('div'); d.className = 'eq'; d.append(c); ED.bloco.after(d); }
+    if (c.closest(BLOCOS)) ED.bloco = c.closest(BLOCOS);
     sujo(true); $('editor-eq').hidden = true; montarSumario();
   };
   $('ee-tex').addEventListener('keydown', e => {
