@@ -1,0 +1,3 @@
+[submodule "vendor/Preambulo"]
+	path = vendor/Preambulo
+	url = https://github.com/fabiolimath/Preambulo.git
