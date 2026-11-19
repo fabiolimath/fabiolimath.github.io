@@ -1,0 +1,11 @@
+# Abre um PR neste repositório sempre que o Preambulo (submodule em
+# vendor/Preambulo) tiver commits novos na main. Mesclar o PR atualiza a
+# versão do fol-MathJax.sty e do fol-LaTeX.sty usada pelas aulas.
+version: 2
+updates:
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: "Preambulo"
