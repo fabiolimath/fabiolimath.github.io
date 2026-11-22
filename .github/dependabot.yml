@@ -1,6 +1,7 @@
-# Abre um PR neste repositório sempre que o Preambulo (submodule em
-# vendor/Preambulo) tiver commits novos na main. Mesclar o PR atualiza a
-# versão do fol-MathJax.sty e do fol-LaTeX.sty usada pelas aulas.
+# Abre um PR neste repositório sempre que um submodule tiver commits novos na
+# main: o Preambulo (vendor/Preambulo: fol-MathJax.sty e fol-LaTeX.sty) ou o
+# Strata.viz (vendor/Strata.viz: strata.js e strata.css, o editor das aulas).
+# Mesclar o PR atualiza a versão usada pelas aulas.
 version: 2
 updates:
   - package-ecosystem: gitsubmodule
@@ -8,4 +9,4 @@ updates:
     schedule:
       interval: daily
     commit-message:
-      prefix: "Preambulo"
+      prefix: "Dependências"

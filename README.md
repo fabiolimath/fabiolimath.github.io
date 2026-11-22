@@ -15,6 +15,7 @@ motor/
   exemplo.html                     página de teste de todas as macros e figuras
 ferramentas/figuras.mjs            compila as figuras LaTeX (roda no Actions)
 vendor/Preambulo/                  submodule do github.com/fabiolimath/Preambulo
+vendor/Strata.viz/                 submodule do github.com/fabiolimath/Strata.viz (editor das aulas)
 ```
 
 Cada material fica em uma pasta própria com um `index.html`, o que dá
@@ -36,14 +37,37 @@ GitHub Actions**.
 2. Acrescente o link na lista `disciplinas/calculo3/index.html`.
 3. Abra um PR e mescle; em um ou dois minutos está no ar.
 
+## Strata (editor das aulas)
+
+As aulas são feitas com o [Strata.viz](https://github.com/fabiolimath/Strata.viz):
+o arquivo da aula tem só o conteúdo, e o editor (modos leitura, apresentação e
+edição) vem de `strata/strata.js` e `strata/strata.css`. O Strata entra como
+submodule em `vendor/Strata.viz`, fixado num commit; na publicação, o workflow
+copia os dois arquivos para `strata/`. O `<head>` de uma aula:
+
+```html
+<link rel="stylesheet" href="https://fabiolimath.github.io/strata/strata.css">
+<script src="https://fabiolimath.github.io/strata/strata.js"></script>
+<script src="https://fabiolimath.github.io/motor/fol.js"></script>
+```
+
+O `fol.js` vem depois do `strata.js`. Os endereços são absolutos para que uma
+cópia salva no computador também funcione (com internet). As convenções do
+HTML estão no README do Strata.
+
+**Atualizar o Strata**: o Dependabot abre um PR aqui quando a `main` do
+Strata.viz tiver commits novos; mesclar o PR muda a versão usada por todas as
+aulas.
+
 ## Preambulo (fol-MathJax.sty e fol-LaTeX.sty)
 
 O Preambulo entra como submodule em `vendor/Preambulo`, fixado num commit.
 Na publicação, o workflow copia o `fol-MathJax.sty` para `motor/` e compila
 as figuras com o `fol-LaTeX.sty`, sempre na versão fixada.
 
-Numa aula, basta pôr no `<head>`, depois do `window.MathJax = {...}` e antes
-do `<script>` do MathJax:
+Numa aula com o Strata, basta pôr no `<head>`, depois do `strata.js` (numa
+página sem o Strata, depois do `window.MathJax = {...}` e antes do `<script>`
+do MathJax):
 
 ```html
 <script src="https://fabiolimath.github.io/motor/fol.js"></script>

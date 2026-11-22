@@ -25,7 +25,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - name: Baixar o repositório (com o Preambulo, na versão fixada)
+      - name: Baixar o repositório (com o Preambulo e o Strata, nas versões fixadas)
         uses: actions/checkout@v4
         with:
           submodules: true
@@ -47,6 +47,9 @@ jobs:
           cp -r disciplinas motor _site/
           # Macros do Preambulo, lidas pelo motor/fol.js
           cp vendor/Preambulo/fol-MathJax.sty _site/motor/
+          # Editor das aulas (Strata.viz), na versão fixada pelo submodule
+          mkdir _site/strata
+          cp vendor/Strata.viz/strata.js vendor/Strata.viz/strata.css _site/strata/
 
       - name: Compilar as figuras LaTeX das aulas
         run: node ferramentas/figuras.mjs _site vendor/Preambulo

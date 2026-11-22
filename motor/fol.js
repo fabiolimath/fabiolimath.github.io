@@ -23,6 +23,9 @@
  *    figura: mudou o texto, muda a imagem. Uma figura que ainda não foi
  *    publicada aparece como um aviso com o código LaTeX.
  *
+ * Com o Strata (github.com/fabiolimath/Strata.viz), o fol.js vem DEPOIS do
+ * strata.js. O que ele acrescenta à página tem data-strata-temp e não é gravado.
+ *
  * Tudo é retrocompatível: sem MathJax na página, só as figuras funcionam;
  * sem internet, a página segue com as macros que ela mesma definir.
  */
@@ -105,6 +108,7 @@
     if (prox && prox.classList.contains('fol-figura')) prox.remove();   // salva pelo modo edição
     var img = document.createElement('img');
     img.className = 'fol-figura';
+    img.setAttribute('data-strata-temp', '');   // o editor (Strata) não grava a imagem
     img.alt = 'Figura: ' + tex;
     img.setAttribute('contenteditable', 'false');
     // O SVG vem em pontos do LaTeX; 4/3 os converte em pixels de CSS (1pt = 4/3 px),
@@ -114,6 +118,7 @@
     img.onerror = function () {
       var aviso = document.createElement('pre');
       aviso.className = 'fol-figura fol-figura-pendente';
+      aviso.setAttribute('data-strata-temp', '');
       aviso.setAttribute('contenteditable', 'false');
       aviso.title = 'A figura é gerada quando a aula é publicada no site.';
       aviso.textContent = 'Figura ainda não publicada:\n' + tex;
@@ -126,6 +131,7 @@
   };
 
   var css = document.createElement('style');
+  css.setAttribute('data-strata-temp', '');
   css.textContent =
     'img.fol-figura{display:block;margin:.6em auto;max-width:100%;height:auto}' +
     'pre.fol-figura-pendente{margin:.6em auto;padding:.5em .8em;border:1px dashed #c60;' +
