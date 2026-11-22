@@ -1,0 +1,12 @@
+# Abre um PR neste repositório sempre que um submodule tiver commits novos na
+# main: o Preambulo (vendor/Preambulo: fol-MathJax.sty e fol-LaTeX.sty) ou o
+# Strata.viz (vendor/Strata.viz: strata.js e strata.css, o editor das aulas).
+# Mesclar o PR atualiza a versão usada pelas aulas.
+version: 2
+updates:
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: "Dependências"

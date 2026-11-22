@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exemplo do Preambulo nas aulas</title>
+<style>
+  body { font-family: "Times New Roman", Times, serif; max-width: 860px; margin: 2em auto; padding: 0 16px; color: #3333cc; background: #fff; line-height: 1.5; }
+  h1, h2 { color: #ff8000; font-weight: normal; }
+  code { color: #444; }
+</style>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] },
+    svg: { fontCache: 'local' },
+    startup: { typeset: false }
+  };
+</script>
+<script src="fol.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+<h1>Preambulo nas aulas HTML</h1>
+
+<h2>Macros do fol-MathJax.sty</h2>
+<p>Funções: $\sen t$, $\senh 2t$, $\tg x$, $\arctg x$, $\ee^{\ii\theta}$, $\L\{f\}(s)$, $x \in \bbR$, $f\in\scC$.</p>
+<p>Setas e cores: $y'' + 4y = 0 \Imp \red{y = c_1 \cos 2t + c_2 \sen 2t}$, $\quad a \sss b$, $\quad \blue{1}\,\green{2}\,\orange{3}\,\purple{4}\,\violet{5}\,\brown{6}$.</p>
+<p>Cálculo: $$\dd{t}\,\frac{x^2}{2} = x\,x', \qquad \pp f,\quad \pp[y] f, \qquad \zer{\cos\frac{\pi}{2}}, \qquad \zer[1]{\frac{x^2}{x^2}}, \qquad x = \frac{-b \pm \sqrt{\Delta}}{2a}$$</p>
+<p>Vetores: $\vt{F}=\lv{1,2,3}$, $\abs{\vt v}$, $\esc{u}{v}$, $\vet{u}{v}$, $\curl{F}$.</p>
+<p>Matrizes e sistemas: $$\Mat{1 & 2\\ 3 & 4}, \qquad \Det{1 & 2\\ 3 & 4}, \qquad \begin{ea} x + y = 1\\ x - y = 0 \end{ea} \qquad \Sis{x + y &=& 1\\ x - y &=& 0}$$</p>
+<p><code>\mt</code>: $\mt{se} x > 0$.</p>
+
+<h2>Figuras do fol-LaTeX.sty</h2>
+<p>Cada figura é um <code>&lt;script type="text/latex"&gt;</code>, compilado para SVG na publicação.</p>
+<figure>
+<script type="text/latex">
+\aroxy{1}{2}{1}
+</script>
+</figure>
+<figure>
+<script type="text/latex">
+\EscalaFiguras{0.6}
+\esferaNcilindroxy{1}{2}{1}
+</script>
+</figure>
+<figure>
+<script type="text/latex">
+\begin{tikzpicture}
+  \begin{axis}[width=8cm, height=5cm, xlabel=$t$, ylabel=$q(t)$]
+    \addplot[blue, thick, domain=0:10, samples=200] {3*cos(deg(2*x)) - 0.5*sin(deg(2*x))};
+  \end{axis}
+\end{tikzpicture}
+</script>
+</figure>
+<p><code>\Zer</code> e <code>\Zerup</code> (TikZ) também podem ser usados numa figura: </p>
+<figure>
+<script type="text/latex">
+$\displaystyle \Zer{\sen(\pi)} + \Zerup[1][blue]{\cos 0}$
+</script>
+</figure>
+
+<script>
+  MathJax.startup.promise.then(() => MathJax.typesetPromise());
+</script>
+</body>
+</html>

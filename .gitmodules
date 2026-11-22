@@ -1,0 +1,6 @@
+[submodule "vendor/Preambulo"]
+	path = vendor/Preambulo
+	url = https://github.com/fabiolimath/Preambulo.git
+[submodule "vendor/Strata.viz"]
+	path = vendor/Strata.viz
+	url = https://github.com/fabiolimath/Strata.viz.git

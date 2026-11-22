@@ -25,8 +25,17 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - name: Baixar o repositório
+      - name: Baixar o repositório (com o Preambulo e o Strata, nas versões fixadas)
         uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Instalar o LaTeX (para as figuras)
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q --no-install-recommends \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+            texlive-pictures texlive-fonts-recommended poppler-utils
 
       - name: Configurar o Pages
         uses: actions/configure-pages@v5
@@ -35,7 +44,15 @@ jobs:
         run: |
           mkdir _site
           cp index.html .nojekyll _site/
-          cp -r disciplinas _site/
+          cp -r disciplinas motor _site/
+          # Macros do Preambulo, lidas pelo motor/fol.js
+          cp vendor/Preambulo/fol-MathJax.sty _site/motor/
+          # Editor das aulas (Strata.viz), na versão fixada pelo submodule
+          mkdir _site/strata
+          cp vendor/Strata.viz/strata.js vendor/Strata.viz/strata.css _site/strata/
+
+      - name: Compilar as figuras LaTeX das aulas
+        run: node ferramentas/figuras.mjs _site vendor/Preambulo
 
       - name: Enviar o site
         uses: actions/upload-pages-artifact@v3
