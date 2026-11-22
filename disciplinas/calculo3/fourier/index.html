@@ -87,7 +87,7 @@
   <p class="fragment">Há um detalhe importante perto dos saltos. Ao somarmos apenas os \(N\) primeiros termos (a <span class="rotulo">soma parcial</span> \(S_N\)), a curva oscila e <span class="rotulo">ultrapassa</span> o valor da função perto do salto. Aumentando \(N\), a oscilação fica mais estreita, mas a ultrapassagem não diminui: ela tende a cerca de <span class="rotulo">9% do tamanho do salto</span>. Esse é o <span class="rotulo">fenômeno de Gibbs</span>, e você o verá no gráfico do Exemplo 1.</p>
   <h2 class="fragment">6. Funções pares e ímpares</h2>
   <p class="fragment">Muitas vezes, metade dos coeficientes é zero, e podemos saber disso antes de fazer qualquer conta. Lembremos que \(f\) é <span class="rotulo">par</span> se \(f(-x) = f(x)\) (gráfico simétrico em relação ao eixo \(y\), como \(\cos x\) e \(x^2\)) e <span class="rotulo">ímpar</span> se \(f(-x) = -f(x)\) (simétrico em relação à origem, como \(\sen x\) e \(x^3\)). Duas propriedades decorrem diretamente disso:</p>
-  <div class="eq fragment">\[ f(x) \mt{ par} \Imp \int_{-L}^{L} f(x)\,dx = 2\int_0^L f(x)\,dx, \qquad f(x) \mt{ ímpar} \Imp \int_{-L}^{L} f(x)\,dx = 0. \]</div>
+  <div class="eq fragment">\[ f(x) \mt{ par} \imp \int_{-L}^{L} f(x)\,dx = 2\int_0^L f(x)\,dx, \qquad f(x) \mt{ ímpar} \imp \int_{-L}^{L} f(x)\,dx = 0. \]</div>
   <p class="fragment">Além disso, o produto de duas funções pares ou de duas ímpares é par, e o produto de uma par por uma ímpar é ímpar, exatamente como nos números naturais.</p>
   <p class="fragment">Aplicando isso às fórmulas de Euler–Fourier: se \(f\) é par, então \(f(x)\sen(n\pi x/L)\) é ímpar e todos os \(b_n\) se anulam; se \(f\) é ímpar, então \(f(x)\cos(n\pi x/L)\) é ímpar e todos os \(a_n\) se anulam. Assim,</p>
   <div class="rodape">4</div>
@@ -182,7 +182,7 @@
   <p class="fragment sem-recuo">Pelo método dos coeficientes a determinar, procuramos \(y_p = A\sen\red c t + B\cos\red c t\). Então \(y_p' = A\red c\cos\red c t - B\red c\sen\red c t\) e, substituindo na EDO, temos</p>
   <div class="eq fragment">\[ (A - a\red c B)\sen\red c t + (a\red c A + B)\cos\red c t = b\sen\red c t. \]</div>
   <p class="fragment sem-recuo">Comparando os coeficientes, \(A - a\red c B = b\) e \(a\red c A + B = 0\). Da segunda, \(B = -a\red c A\); substituindo na primeira,</p>
-  <div class="eq fragment">\[ A\big(1 + (a\red c)^2\big) = b \Imp A = \frac{b}{1 + (a\red c)^2}, \qquad B = -\frac{ab\red c}{1 + (a\red c)^2}. \]</div>
+  <div class="eq fragment">\[ A\big(1 + (a\red c)^2\big) = b \imp A = \frac{b}{1 + (a\red c)^2}, \qquad B = -\frac{ab\red c}{1 + (a\red c)^2}. \]</div>
   <div class="rodape">9</div>
 </section>
 
@@ -204,8 +204,8 @@
   <p class="fragment"><span class="rotulo">Caso \(\red c = \omega\) (ressonância).</span> Agora \(\sen\omega t\) é solução da homogênea, e a tentativa é \(y_p = t(A\cos\omega t + B\sen\omega t)\). As contas levam a</p>
   <div class="eq fragment caixa">\[ y_p = \red{-\frac{b\,t}{2\omega}}\cos\omega t. \]</div>
   <p class="fragment">Sempre podemos verificar a solução. Derivando duas vezes,</p>
-  <div class="eq fragment">\[ y_p'' = b\sen\omega t + \frac{b\omega}{2}\,t\cos\omega t \Imp y_p'' + \omega^2 y_p = b\sen\omega t + \frac{b\omega}{2}t\cos\omega t - \frac{b\omega}{2}t\cos\omega t \]
-  \[ \Imp y_p'' + \omega^2 y_p = b\sen\omega t. \]</div>
+  <div class="eq fragment">\[ y_p'' = b\sen\omega t + \frac{b\omega}{2}\,t\cos\omega t \imp y_p'' + \omega^2 y_p = b\sen\omega t + \frac{b\omega}{2}t\cos\omega t - \frac{b\omega}{2}t\cos\omega t \]
+  \[ \imp y_p'' + \omega^2 y_p = b\sen\omega t. \]</div>
   <div class="rodape">10</div>
 </section>
 
@@ -222,7 +222,7 @@
   <div class="eq fragment">\[ y'' + 4y = f(t). \]</div>
   <p class="fragment">Aqui \(\omega = 2\) e \(L = 3\pi/2\), de modo que as frequências da série são \(\red{c_n} = n\pi/L = 2n/3\), para \(n\) ímpar (simetria de meia onda). A fundamental é \(\red{c_1} = 2/3\), bem abaixo de \(\omega = 2\). Mas, para \(n = 3\), \(\red{c_3} = 2 = \omega\): o terceiro harmônico está em ressonância.</p>
   <p class="fragment">Para \(n \ne 3\), estamos no caso \(\red c \ne \omega\), com \(b_n = 4/(n\pi)\)&nbsp;para a onda quadrada. Logo&nbsp;</p>
-  <div class="eq fragment">\[ y_p = \frac{b}{\omega^2 - \red c^2}\sen\red c t \Imp y_n = \frac{4}{n\pi}\cdot\frac{1}{4 - 4n^2/9}\sen\frac{2nt}{3} \]</div>
+  <div class="eq fragment">\[ y_p = \frac{b}{\omega^2 - \red c^2}\sen\red c t \imp y_n = \frac{4}{n\pi}\cdot\frac{1}{4 - 4n^2/9}\sen\frac{2nt}{3} \]</div>
   <div class="eq fragment">\[ y_n  = \frac{9}{n\pi(9 - n^2)}\sen\frac{2nt}{3}. \]</div>
   <p class="fragment">Para \(n = 3\), temos o caso ressonante com \(b = 4/(3\pi)\):</p>
   <div class="eq fragment">\[ y_3 =  \red{-\frac{b\,t}{2\omega}}\cos\omega t = -\frac{4}{3\pi}\cdot\frac{t}{2\cdot 2}\cos 2t = \red{-\frac{t}{3\pi}\cos 2t}. \]</div>
@@ -237,8 +237,8 @@
   <h2>10. Um atalho: a exponencial complexa</h2>
   <p class="fragment">Nas seções 8 e 9, refizemos o método dos coeficientes a determinar para cada equação. Há um caminho mais curto, que será muito usado nas disciplinas seguintes, usando a fórmula de Euler, \(e^{i\red c t} = \cos\red c t + i\sen\red c t\). Se acharmos a resposta à entrada complexa \(e^{i\red c t}\), a resposta a \(\sen\red c t\) será sua parte imaginária.</p>
   <p class="fragment">Tentando \(y_p = H\,e^{i\red c t}\), cada derivada apenas multiplica por \(i\red c\). Então:</p>
-  <div class="eq fragment">\[ a\,y' + y = e^{i\red c t} \Imp (i a\red c + 1)H = 1 \Imp H(i\red c) = \frac{1}{1 + i a\red c}, \]</div>
-  <div class="eq fragment">\[ y'' + \omega^2 y = e^{i\red c t} \Imp (-\red c^2 + \omega^2)H = 1 \Imp H(i\red c) = \frac{1}{\omega^2 - \red c^2}. \]</div>
+  <div class="eq fragment">\[ a\,y' + y = e^{i\red c t} \imp (i a\red c + 1)H = 1 \imp H(i\red c) = \frac{1}{1 + i a\red c}, \]</div>
+  <div class="eq fragment">\[ y'' + \omega^2 y = e^{i\red c t} \imp (-\red c^2 + \omega^2)H = 1 \imp H(i\red c) = \frac{1}{\omega^2 - \red c^2}. \]</div>
   <aside class="nota fragment">*: \(H\) é a mesma função de transferên- cia obtida com a transformada de Laplace, avaliada em \(s = i\red c\).</aside>
   <p class="fragment">O número complexo \(H(i\red c)\) contém toda a informação: o ganho é \(|H(i\red c)|\) e a defasagem é \(-\arg H(i\red c)\). Por exemplo, \(|1/(1 + ia\red c)| = 1/\sqrt{1 + (a\red c)^2}\), exatamente o ganho da seção 8, sem refazer conta nenhuma. Com isso, a resposta a uma entrada periódica qualquer se resume a: <span class="rotulo">cada harmônico sai multiplicado por \(H\) avaliado na sua frequência</span>.</p>
   <div class="rodape">12</div>
